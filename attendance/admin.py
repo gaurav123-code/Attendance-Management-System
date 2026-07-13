@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Department, Employee
+from .models import Attendance, Department, Employee
 
 
 @admin.register(Department)
@@ -44,5 +44,42 @@ class EmployeeAdmin(admin.ModelAdmin):
     ordering = ("employee_id",)
 
     list_select_related = ("department",)
+
+    list_per_page = 20
+    
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    list_display = (
+        "employee",
+        "attendance_date",
+        "status",
+        "check_in",
+        "check_out",
+    )
+
+    search_fields = (
+        "employee__employee_id",
+        "employee__first_name",
+        "employee__last_name",
+    )
+
+    list_filter = (
+        "status",
+        "attendance_date",
+    )
+
+    list_select_related = (
+        "employee",
+    )
+
+    autocomplete_fields = (
+        "employee",
+    )
 
     list_per_page = 20
