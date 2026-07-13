@@ -11,6 +11,13 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
+
+    readonly_fields = (
+        "employee_id",
+        "created_at",
+        "updated_at",
+    )
+
     list_display = (
         "employee_id",
         "first_name",
@@ -18,6 +25,7 @@ class EmployeeAdmin(admin.ModelAdmin):
         "email",
         "department",
         "is_active",
+        "created_at",
     )
 
     search_fields = (
@@ -34,5 +42,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     )
 
     ordering = ("employee_id",)
+
+    list_select_related = ("department",)
 
     list_per_page = 20
