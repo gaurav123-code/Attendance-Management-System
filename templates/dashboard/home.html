@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        header {
+            background: #0d6efd;
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            font-size: 26px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #666;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .08);
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            color: #0d6efd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        td:first-child {
+            width: 40%;
+            font-weight: bold;
+        }
+
+        .status {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .checkin {
+            background: #198754;
+        }
+
+        .checkout {
+            background: #dc3545;
+        }
+
+        .disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h2>Attendance Management System</h2>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">
+            Logout
+        </button>
+    </form>
+
+</header>
+
+<div class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="welcome">
+
+        {% if employee %}
+            <h1>Welcome, {{ employee.first_name }} {{ employee.last_name }}</h1>
+        {% else %}
+            <h1>Welcome, {{ request.user.username }}</h1>
+        {% endif %}
+
+        <p>Employee Dashboard</p>
+
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+
+            <h3>Employee Information</h3>
+
+            {% if employee %}
+
+            <table>
+
+                <tr>
+                    <td>Employee ID</td>
+                    <td>{{ employee.employee_id }}</td>
+                </tr>
+
+                <tr>
+                    <td>Department</td>
+                    <td>{{ employee.department.name }}</td>
+                </tr>
+
+                <tr>
+                    <td>Email</td>
+                    <td>{{ employee.email }}</td>
+                </tr>
+
+                <tr>
+                    <td>Phone</td>
+                    <td>{{ employee.phone_number }}</td>
+                </tr>
+
+                <tr>
+                    <td>Status</td>
+                    <td>
+                        {% if employee.is_active %}
+                            Active
+                        {% else %}
+                            Inactive
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </table>
+
+            {% else %}
+
+                <p>No employee profile is linked with this account.</p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="card">
+
+            <h3>Today's Attendance</h3>
+
+            <table>
+
+                <tr>
+                    <td>Status</td>
+                    <td class="status">
+                        {% if today_attendance %}
+                            {{ today_attendance.get_status_display }}
+                        {% else %}
+                            Not Checked In
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Check In</td>
+                    <td>
+                        {% if today_attendance and today_attendance.check_in %}
+                            {{ today_attendance.check_in }}
+                        {% else %}
+                            --:--
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Check Out</td>
+                    <td>
+                        {% if today_attendance and today_attendance.check_out %}
+                            {{ today_attendance.check_out }}
+                        {% else %}
+                            --:--
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Working Hours</td>
+                    <td>{{ working_hours }}</td>
+                </tr>
+
+            </table>
+
+            <div class="actions">
+
+                {% if today_attendance and today_attendance.check_in %}
+
+                    <button class="btn checkin disabled" disabled>
+                        Checked In
+                    </button>
+
+                {% else %}
+
+                    <form method="post" action="{% url 'check_in' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn checkin">
+                            Check In
+                        </button>
+                    </form>
+
+                {% endif %}
+
+
+                {% if today_attendance and today_attendance.check_in and not today_attendance.check_out %}
+
+                    <form method="post" action="{% url 'check_out' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn checkout">
+                            Check Out
+                        </button>
+                    </form>
+
+                {% elif today_attendance and today_attendance.check_out %}
+
+                    <button class="btn checkout disabled" disabled>
+                        Checked Out
+                    </button>
+
+                {% else %}
+
+                    <button class="btn checkout disabled" disabled>
+                        Check Out
+                    </button>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
