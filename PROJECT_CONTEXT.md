@@ -1,71 +1,112 @@
-Hi ChatGPT,
+You are continuing my Attendance Management System project exactly from our previous chat.
 
-This is a continuation of my Attendance Management System project. Continue exactly from this stage. Do not repeat previous setup or explanations.
+IMPORTANT:
+Do NOT repeat setup.
+Do NOT redesign anything.
+Do NOT explain previous code.
+Assume you are my project partner and already know every discussion, every decision, every file and every requirement.
 
-PROJECT OVERVIEW
+====================================================================
+PROJECT PRIORITY
+====================================================================
 
-Project Name:
-Attendance Management System for Employees
+STRICT DEADLINE.
 
-Technology Stack:
-- Python
-- Django
-- PostgreSQL
-- pgAdmin 4
-- HTML
-- CSS
-- JavaScript (later)
-- Bootstrap (later)
+Project must be completed as quickly as possible.
+
+Until the project is finished:
+
+• No long theory.
+• No unnecessary Django explanations.
+• No redesign.
+• No architecture discussions.
+• Give only required explanation.
+• Think like my development partner.
+
+For every feature:
+
+1. Tell me which file to open.
+2. Give COMPLETE updated code for every modified file.
+3. Never give partial snippets.
+4. Tell me exactly which command to run.
+5. Tell me expected output.
+6. Wait for my confirmation before moving ahead.
+
+====================================================================
+TECH STACK
+====================================================================
+
+Python
+Django 6
+PostgreSQL
+pgAdmin 4
+HTML
+CSS
+Bootstrap (later if required)
+JavaScript (later if required)
 
 Database:
-attendance_db (PostgreSQL)
+attendance_db
 
-LEARNING STYLE
+====================================================================
+PROJECT STRUCTURE
+====================================================================
 
-I am learning Django.
+Attendance-Management-System/
 
-For every feature follow this workflow:
+│
+├── attendance/
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations/
+│   ├── models.py
+│   ├── urls.py
+│   ├── views.py
+│   ├── tests.py
+│   └── ...
+│
+├── attendance_system/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   ├── wsgi.py
+│   └── ...
+│
+├── templates/
+│   ├── registration/
+│   │     └── login.html
+│   │
+│   └── dashboard/
+│         └── home.html
+│
+├── README.md
+├── PROJECT_CONTEXT.md
+├── manage.py
 
-Design
-↓
-Code
-↓
-Migration (if required)
-↓
-Testing
-↓
-Next Feature
+====================================================================
+DATABASE MODELS
+====================================================================
 
-Don't dump complete code without explanation.
+Department
 
-Before writing code:
-- Explain the design.
-- Explain why we are using that approach.
-- Explain Django concepts.
-- Follow PEP-8.
-- Follow industry standards.
-- Review code like a Senior Django Developer doing a Pull Request review.
-- Keep the project scalable.
-- Keep business logic inside models where appropriate.
+Fields
 
-PROJECT STATUS
+- name
 
-Completed:
+------------------------------------------------------------
 
-✔ Django Project
-✔ attendance app
-✔ PostgreSQL connection
-✔ Superuser
-✔ Django Admin
+Employee
 
-Department Model
-Completed.
+Fields
 
-Employee Model
-Completed.
+- user (OneToOneField with Django User)
+- employee_id (Auto Generated)
 
-Features:
-- employee_id auto generated (EMP0001...)
+Format
+
+EMP0001
+EMP0002
+
 - first_name
 - last_name
 - email
@@ -76,182 +117,354 @@ Features:
 - created_at
 - updated_at
 
-Employee Admin
-Completed and tested.
+------------------------------------------------------------
 
-EmployeeAdmin currently includes:
-- readonly_fields
-- list_display
-- search_fields
-- list_filter
-- ordering
-- list_select_related
-- list_per_page
+Attendance
 
-Attendance Model
+Fields
 
-Completed.
+employee
 
-Fields:
-- employee
-- attendance_date
-- status
-- check_in
-- check_out
-- remarks
-- created_at
-- updated_at
+attendance_date
+
+status
+
+check_in
+
+check_out
+
+remarks
+
+created_at
+
+updated_at
+
+Attendance Status
+
+Present
+
+Absent
+
+Late
+
+Half Day
+
+Leave
 
 Business Rules
 
-Office Start:
+Office Start
+
 09:00 AM
 
-Late After:
+Late After
+
 09:45 AM
 
-Half Day After:
-01:30 PM
-
-Office End:
-06:00 PM
-
-Status Logic
-
-<=09:45
-Present
-
-09:46–01:30
-Late
-
-After 01:30
 Half Day
 
-Without Check-in:
-Admin manually selects:
-- Absent
-- Leave
+01:30 PM
 
-Validation Rules
+Office End
 
-- Check-out requires Check-in
-- Check-out > Check-in
-- Without Check-in only Absent or Leave allowed
-- Present/Late/Half Day auto calculated
+06:00 PM
 
-Attendance model methods:
-- save()
-- clean()
-- _calculate_status()
-- _validate_status()
-- _validate_check_times()
+Validation
 
-AttendanceAdmin
+✓ Check-out requires Check-in
 
-Current code:
+✓ Check-out > Check-in
 
-@admin.register(Attendance)
-class AttendanceAdmin(admin.ModelAdmin):
+✓ Without Check-in
 
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-    )
+Only
 
-    list_display = (
-        "employee",
-        "attendance_date",
-        "status",
-        "check_in",
-        "check_out",
-    )
+Absent
 
-    search_fields = (
-        "employee__employee_id",
-        "employee__first_name",
-        "employee__last_name",
-    )
+Leave
 
-    list_filter = (
-        "status",
-        "attendance_date",
-    )
+allowed
 
-    list_select_related = (
-        "employee",
-    )
+Status auto calculated inside model.
 
-    autocomplete_fields = (
-        "employee",
-    )
+Business logic remains inside models.
 
-    list_per_page = 20
+No business logic inside templates.
 
-Important:
+====================================================================
+CURRENT IMPLEMENTATION STATUS
+====================================================================
 
-Initially Django Admin showed this error:
+Completed
 
-ProgrammingError:
-relation "attendance_attendance" does not exist
+✓ PostgreSQL connected
 
-Reason:
-Attendance migration had never been created.
+✓ All migrations completed
 
-We verified:
+✓ Django Admin configured
 
-python manage.py showmigrations attendance
+✓ DepartmentAdmin completed
 
-Output:
+✓ EmployeeAdmin completed
 
-[X] 0001_initial
-[X] 0002_employee
+✓ AttendanceAdmin completed
 
-Then we ran:
+✓ Employee linked with Django User
 
-python manage.py makemigrations
+✓ Login system working
 
-Output:
+✓ Logout working
 
-Migrations for 'attendance':
-attendance/migrations/0003_attendance.py
-+ Create model Attendance
+✓ Templates configured
 
-CURRENT STAGE
+✓ Employee Dashboard working
 
-We have NOT yet executed:
+Dashboard currently displays
 
-python manage.py migrate
+Employee Information
 
-Continue exactly from here.
+Today's Attendance
 
-Workflow:
+Employee Details
 
-1. Run migrate
-2. Verify Attendance table is created
-3. Test Attendance Admin
-4. Fix any issues found during testing
-5. Only after Attendance Admin is fully tested, continue to the next feature.
+Attendance Status
 
-Also remind me whenever PROJECT_CONTEXT.md needs an update after completing a major milestone.
+Check In
 
-PROJECT STRUCTURE
+Check Out
 
-Attendance-Management-System/
-│
-├── attendance/
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── tests.py
-│   └── views.py
-│
-├── attendance_system/
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-│
-├── manage.py
-├── requirements.txt
-├── README.md
-└── PROJECT_CONTEXT.md
+Working Hours
+
+Success Messages
+
+Logout
+
+====================================================================
+EMPLOYEE ATTENDANCE FLOW
+====================================================================
+
+COMPLETED
+
+✓ Employee Login
+
+↓
+
+Dashboard
+
+↓
+
+Check In
+
+↓
+
+Attendance record automatically created
+
+↓
+
+Status automatically calculated
+
+↓
+
+Check Out
+
+↓
+
+Working Hours automatically calculated
+
+↓
+
+Buttons automatically change
+
+Check In
+
+↓
+
+Checked In
+
+Check Out
+
+↓
+
+Checked Out
+
+Messages shown after every action.
+
+Duplicate Check In prevented.
+
+Duplicate Check Out prevented.
+
+Working Hours calculated dynamically.
+
+No working_hours database field used.
+
+====================================================================
+CURRENT URLS
+====================================================================
+
+/
+
+Dashboard
+
+/login/
+
+/logout/
+
+/check-in/
+
+/check-out/
+
+Authentication uses Django built-in LoginView and LogoutView.
+
+====================================================================
+CURRENT VIEWS
+====================================================================
+
+dashboard()
+
+check_in()
+
+check_out()
+
+Dashboard fetches
+
+Employee
+
+Today's Attendance
+
+Working Hours
+
+Context passed
+
+employee
+
+today_attendance
+
+working_hours
+
+====================================================================
+CURRENT TEMPLATE
+====================================================================
+
+dashboard/home.html
+
+Contains
+
+Employee Information Card
+
+Today's Attendance Card
+
+Working Hours
+
+Check In Button
+
+Check Out Button
+
+Logout Button
+
+Messages
+
+Dynamic Button States
+
+====================================================================
+CURRENT PROJECT STATE
+====================================================================
+
+Employee Module
+
+Approximately 80% complete.
+
+Everything implemented so far is working successfully.
+
+Verified manually.
+
+No pending bugs.
+
+====================================================================
+NEXT ROADMAP
+====================================================================
+
+Continue EXACTLY from here.
+
+Next feature:
+
+Attendance History
+
+Requirements
+
+Show last 30 attendance records.
+
+Columns
+
+Date
+
+Status
+
+Check In
+
+Check Out
+
+Working Hours
+
+Newest first.
+
+Responsive.
+
+No migrations.
+
+No model changes.
+
+After Attendance History
+
+Employee Profile Page
+
+↓
+
+Admin Dashboard
+
+↓
+
+Reports
+
+↓
+
+Statistics
+
+↓
+
+UI Polish
+
+↓
+
+GitHub Ready
+
+↓
+
+Resume Ready
+
+====================================================================
+IMPORTANT CODING STYLE
+====================================================================
+
+Always give COMPLETE updated code for any modified file.
+
+Never give snippets.
+
+Never skip imports.
+
+Never assume I will merge code manually.
+
+Follow PEP-8.
+
+Keep code clean.
+
+Avoid unnecessary packages.
+
+Use Django best practices.
+
+Keep business logic inside models.
+
+Maintain existing architecture.
+
+Continue from Attendance History implementation only.
+
+Do not repeat any previous setup or explanation.
