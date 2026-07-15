@@ -18,8 +18,23 @@ class EmployeeAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
+    fields = (
+        "user",
+        "employee_id",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "department",
+        "date_joined",
+        "is_active",
+        "created_at",
+        "updated_at",
+    )
+
     list_display = (
         "employee_id",
+        "user",
         "first_name",
         "last_name",
         "email",
@@ -43,10 +58,11 @@ class EmployeeAdmin(admin.ModelAdmin):
 
     ordering = ("employee_id",)
 
-    list_select_related = ("department",)
+    list_select_related = ("department", "user")
 
     list_per_page = 20
-    
+
+
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
 
