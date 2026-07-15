@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import time
+from django.contrib.auth.models import User
 
 class Department(models.Model):
     name = models.CharField(
@@ -13,6 +14,13 @@ class Department(models.Model):
 
 
 class Employee(models.Model):
+    user = models.OneToOneField(
+    User,
+    on_delete=models.CASCADE,
+    related_name="employee",
+    null=True,
+    blank=True,
+)
     employee_id = models.CharField(
         max_length=10,
         unique=True,
@@ -96,10 +104,11 @@ class Attendance(models.Model):
     )
 
     status = models.CharField(
-        max_length=2,
-        choices=AttendanceStatus.choices
+    max_length=2,
+    choices=AttendanceStatus.choices,
+    default=AttendanceStatus.ABSENT,
     )
-
+    
     check_in = models.TimeField(
         null=True,
         blank=True
