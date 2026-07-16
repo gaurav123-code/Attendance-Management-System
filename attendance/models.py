@@ -1,12 +1,14 @@
-from django.db import models
-from django.core.exceptions import ValidationError
 from datetime import time
+
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.db import models
+
 
 class Department(models.Model):
     name = models.CharField(
         max_length=100,
-        unique=True
+        unique=True,
     )
 
     def __str__(self):
@@ -15,70 +17,103 @@ class Department(models.Model):
 
 class Employee(models.Model):
     user = models.OneToOneField(
-    User,
-    on_delete=models.CASCADE,
-    related_name="employee",
-    null=True,
-    blank=True,
-)
+        User,
+        on_delete=models.CASCADE,
+        related_name="employee",
+        null=True,
+        blank=True,
+    )
+
     employee_id = models.CharField(
         max_length=10,
         unique=True,
-        editable=False
+        editable=False,
     )
 
     first_name = models.CharField(
-        max_length=50
+        max_length=50,
     )
 
     last_name = models.CharField(
-        max_length=50
+        max_length=50,
     )
 
     email = models.EmailField(
-        unique=True
+        unique=True,
     )
 
     phone_number = models.CharField(
-        max_length=15
+        max_length=15,
     )
 
     department = models.ForeignKey(
         Department,
         on_delete=models.PROTECT,
-        related_name="employees"
+        related_name="employees",
     )
 
     date_joined = models.DateField()
 
     is_active = models.BooleanField(
-        default=True
+        default=True,
     )
 
+    # -------- Authentication Fields --------
+
+    must_change_password = models.BooleanField(
+        default=True,
+    )
+
+    password_changed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
+    # ---------------------------------------
+
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True
+        auto_now=True,
     )
 
     def save(self, *args, **kwargs):
         if not self.employee_id:
-            last_employee = Employee.objects.order_by("-id").first()
+            last_employee = (
+                Employee.objects
+                .order_by("-id")
+                .first()
+            )
 
             if last_employee:
-                last_id = int(last_employee.employee_id[3:])
+                last_id = int(
+                    last_employee.employee_id[3:]
+                )
                 new_id = last_id + 1
             else:
                 new_id = 1
 
-            self.employee_id = f"EMP{new_id:04d}"
+            self.employee_id = (
+                f"EMP{new_id:04d}"
+            )
 
         super().save(*args, **kwargs)
 
+    @property
+    def full_name(self):
+        return (
+            f"{self.first_name} "
+            f"{self.last_name}"
+        )
+
     def __str__(self):
-        return f"{self.employee_id} - {self.first_name} {self.last_name}"
+        return (
+            f"{self.employee_id} - "
+            f"{self.full_name}"
+        )
+
 
 class Attendance(models.Model):
 
@@ -96,48 +131,54 @@ class Attendance(models.Model):
     employee = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
-        related_name="attendances"
+        related_name="attendances",
     )
 
     attendance_date = models.DateField(
-        db_index=True
+        db_index=True,
     )
 
     status = models.CharField(
-    max_length=2,
-    choices=AttendanceStatus.choices,
-    default=AttendanceStatus.ABSENT,
+        max_length=2,
+        choices=AttendanceStatus.choices,
+        default=AttendanceStatus.ABSENT,
     )
-    
+
     check_in = models.TimeField(
         null=True,
-        blank=True
+        blank=True,
     )
 
     check_out = models.TimeField(
         null=True,
-        blank=True
+        blank=True,
     )
 
     remarks = models.TextField(
-        blank=True
+        blank=True,
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True
+        auto_now=True,
     )
 
     class Meta:
-        ordering = ("-attendance_date", "employee")
+        ordering = (
+            "-attendance_date",
+            "employee",
+        )
 
         constraints = [
             models.UniqueConstraint(
-                fields=["employee", "attendance_date"],
-                name="unique_employee_attendance"
+                fields=[
+                    "employee",
+                    "attendance_date",
+                ],
+                name="unique_employee_attendance",
             )
         ]
 
@@ -156,6 +197,7 @@ class Attendance(models.Model):
 
     def save(self, *args, **kwargs):
         self._calculate_status()
+
         self.full_clean()
 
         super().save(*args, **kwargs)
@@ -165,13 +207,19 @@ class Attendance(models.Model):
             return
 
         if self.check_in <= self.LATE_AFTER:
-            self.status = self.AttendanceStatus.PRESENT
+            self.status = (
+                self.AttendanceStatus.PRESENT
+            )
 
         elif self.check_in <= self.HALF_DAY_AFTER:
-            self.status = self.AttendanceStatus.LATE
+            self.status = (
+                self.AttendanceStatus.LATE
+            )
 
         else:
-            self.status = self.AttendanceStatus.HALF_DAY
+            self.status = (
+                self.AttendanceStatus.HALF_DAY
+            )
 
     def _validate_status(self):
         if self.check_in:
@@ -184,8 +232,8 @@ class Attendance(models.Model):
             raise ValidationError(
                 {
                     "status": (
-                        "Select either Absent or Leave when "
-                        "no check-in time is provided."
+                        "Select either Absent or Leave "
+                        "when no check-in time is provided."
                     )
                 }
             )
@@ -206,8 +254,8 @@ class Attendance(models.Model):
                 raise ValidationError(
                     {
                         "check_out": (
-                            "Check-out time must be later than "
-                            "check-in time."
+                            "Check-out time must be later "
+                            "than check-in time."
                         )
                     }
                 )
