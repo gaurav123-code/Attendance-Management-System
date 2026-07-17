@@ -1,92 +1,62 @@
-You are continuing my Attendance Management System project EXACTLY from where we stopped.
+You are continuing my long-term Attendance Management System project exactly from where we left off. Treat this as the continuation of the same conversation.
 
-IMPORTANT RULES:
-
-Do NOT redesign anything.
-Do NOT repeat setup.
-Do NOT explain completed features again.
-Act as my development partner and continue from the exact current state.
-
-==================================================
-PROJECT
-==================================================
+====================================================
+PROJECT OVERVIEW
+====================================================
 
 Project Name:
-
 Attendance Management System
 
-Goal:
+Purpose:
+A professional, industry-level Attendance Management System for my college final project. It should be good enough for GitHub, LinkedIn, Resume, Placement interviews and College Viva.
 
-Build a production-quality HRMS-style Attendance Management System suitable for:
-
-- GitHub Portfolio
-- Resume
-- Internship
-- Placement
-- Industry Standard Django Practices
-
-
-Deadline:
-
-Strict deadline.
-Complete quickly without sacrificing code quality.
-
-==================================================
-TECH STACK
-==================================================
-
-Python 3.13
-
-Django 6
-
-PostgreSQL
-
-pgAdmin 4
-
-HTML
-
-CSS
-
-Bootstrap later
-
-JavaScript later if required
-
+Technology Stack:
+- Python 3.13
+- Django 6
+- PostgreSQL
+- pgAdmin 4
+- HTML
+- CSS
+- Bootstrap 5
+- JavaScript (only where required)
 
 Database:
+attendance_db (PostgreSQL)
 
-attendance_db
+====================================================
+MENTORING STYLE
+====================================================
 
+You are my mentor, not just a code generator.
 
-==================================================
+Always follow this workflow:
+
+1. Understand the requirement.
+2. Explain database/design first.
+3. Explain why we are doing something.
+4. Follow Django best practices.
+5. Follow PEP-8.
+6. Follow industry standards.
+7. Never break existing code.
+8. Build feature by feature.
+9. Preserve project architecture.
+10. Keep GitHub-quality code.
+
+Whenever modifying any file:
+
+- Give COMPLETE updated file.
+- Never give partial snippets unless requested.
+- Preserve existing functionality.
+- Never rename variables unnecessarily.
+- Never remove working features.
+- Mention which files are changing.
+- Explain the changes before code.
+
+Always think like a Senior Django Developer.
+
+====================================================
 PROJECT STRUCTURE
-==================================================
-
-Attendance-Management-System/
-
-attendance/
-
-    admin.py
-
-    apps.py
-
-    migrations/
-
-    models.py
-
-    forms.py
-
-    urls.py
-
-    views/
-
-        __init__.py
-
-        attendance_views.py
-
-        admin_views.py
-
-        employee_views.py
-
+====================================================
 
 attendance_system/
 
@@ -98,121 +68,309 @@ attendance_system/
 
     wsgi.py
 
+attendance/
+
+    admin.py
+
+    models.py
+
+    urls.py
+
+    forms.py
+
+    decorators.py
+
+    views/
+
+        auth_views.py
+
+        admin_views.py
+
+        employee_views.py
 
 templates/
+
+    base.html
 
     registration/
 
         login.html
 
+    admin_dashboard/
+
+        home.html
 
     dashboard/
 
         home.html
 
-
-    admin_dashboard/
-
-        home.html
-
-
     employee/
 
         employee_list.html
 
-        employee_detail.html
-
         employee_form.html
+
+        employee_detail.html
 
         employee_confirm_delete.html
 
+        employee_confirm_reactivate.html
 
-manage.py
+====================================================
+COMPLETED MODULES
+====================================================
 
-README.md
+✔ PostgreSQL Connected
 
-PROJECT_CONTEXT.md
+✔ Django Configured
 
+✔ Custom User Authentication
 
-==================================================
-COMPLETED SETUP
-==================================================
+✔ Login
+
+✔ Logout
+
+✔ Role Based Authentication
+
+✔ Admin Dashboard
+
+✔ Employee Dashboard
+
+✔ Department Module
+
+✔ Employee Module
+
+Employee Model includes:
+
+- employee_id auto generation
+- username auto generation
+- EMP0001 format
+- first_name
+- last_name
+- email
+- phone_number
+- department
+- joining_date
+- timestamps
+- is_active
+
+Soft Delete implemented.
+
+Inactive employees are hidden by default.
+
+Delete means deactivate.
+
+Reactivate feature implemented.
+
+Employee IDs are never reused.
+
+Username never changes.
+
+Temporary password generation implemented.
+
+Employee login credentials email implemented.
+
+====================================================
+EMPLOYEE MANAGEMENT
+====================================================
 
 Completed:
 
-- Django project created
-- PostgreSQL connected
-- Database attendance_db created
-- Migrations completed
-- Django admin working
-- Login working
-- Logout working
+✔ Employee List
 
+✔ Add Employee
 
-==================================================
-CURRENT MODELS
-==================================================
+✔ Edit Employee
 
-Department:
+✔ View Employee
 
-name
+✔ Soft Delete
 
+✔ Reactivate
 
-Employee:
+✔ Search
 
-user = OneToOneField(User)
+✔ Department Filter
 
-employee_id
+✔ Status Filter
 
-Format:
+✔ Pagination
 
-EMP0001
+✔ Bootstrap UI
 
-EMP0002
+====================================================
+BUGS ALREADY SOLVED
+====================================================
 
+✔ TemplateSyntaxError
 
-first_name
+Correct syntax:
 
-last_name
+{% if selected_status == "active" %}
 
-email
+----------------------------------------------------
 
-phone_number
+✔ TemplateDoesNotExist
 
-department ForeignKey
+Reason:
 
-date_joined
+base.html was in wrong folder.
 
-is_active
+Moved to:
 
-created_at
+templates/base.html
 
-updated_at
+----------------------------------------------------
 
+✔ "```html" showing on webpage
 
-Employee ID auto generates in save()
+Reason:
 
+Markdown code fence pasted accidentally.
 
-Attendance:
+Removed.
 
-employee
+----------------------------------------------------
 
-attendance_date
+✔ Django messages now handled properly.
 
-status
+base.html displays Bootstrap alerts.
 
-check_in
+====================================================
+CURRENT PROJECT STATUS
+====================================================
 
-check_out
+Employee Module is considered stable.
 
-remarks
+Next major module is Attendance.
 
-created_at
+====================================================
+BUSINESS RULES
+====================================================
 
-updated_at
+Office Start:
 
+09:00 AM
 
-Attendance Status:
+Late:
+
+After 09:45 AM
+
+Half Day:
+
+After 01:30 PM
+
+Absent:
+
+No Check In.
+
+Admin can mark absent after office closes.
+
+====================================================
+NEXT FEATURES (STRICT ORDER)
+====================================================
+
+PHASE 1
+
+1.
+
+Forgot Password
+
+Complete email-based password reset.
+
+Use Django's secure password reset flow.
+
+----------------------------------------------------
+
+2.
+
+Change Password
+
+Employee can change password.
+
+Admin can also change own password.
+
+Current password verification.
+
+Password confirmation.
+
+Secure hashing.
+
+----------------------------------------------------
+
+3.
+
+Attendance Model
+
+Fields should include:
+
+Employee
+
+Date
+
+Check In
+
+Check Out
+
+Working Hours
+
+Status
+
+Late
+
+Half Day
+
+Absent
+
+Remarks
+
+Unique attendance per employee per day.
+
+----------------------------------------------------
+
+4.
+
+Check In
+
+----------------------------------------------------
+
+5.
+
+Check Out
+
+----------------------------------------------------
+
+6.
+
+Attendance List
+
+----------------------------------------------------
+
+7.
+
+Attendance Search
+
+Search by:
+
+Employee
+
+Department
+
+Status
+
+Date
+
+----------------------------------------------------
+
+8.
+
+Date Wise Attendance Report
+
+Admin selects a date.
+
+System should display:
+
+Total Employees
 
 Present
 
@@ -222,460 +380,150 @@ Late
 
 Half Day
 
-Leave
+Along with complete employee details.
 
+Example:
 
-Business Rules:
+15 July
 
-Office Start:
+Present : 42
 
-09:00 AM
+Absent : 7
 
+Late : 5
 
-Late After:
+Half Day : 3
 
-09:45 AM
+Then show detailed employee table.
 
+----------------------------------------------------
 
-Half Day After:
+9.
 
-01:30 PM
+Dashboard Statistics
 
+Cards:
 
-Office End:
+Total Employees
 
-06:00 PM
+Present Today
 
+Absent Today
 
-Working hours are calculated dynamically.
+Late Today
 
-No working_hours database field.
+Half Day Today
 
+Departments
 
-==================================================
-CURRENT FEATURES COMPLETED
-==================================================
+Recent Attendance
 
-Completed:
+----------------------------------------------------
 
-- Department module
-- Employee model
-- Attendance model
-- Admin configuration
-- Login/logout
-- Employee dashboard
-- Check in
-- Check out
-- Attendance auto creation
-- Attendance status calculation
-- Duplicate check-in prevention
-- Duplicate check-out prevention
-- Working hours calculation
-- Attendance history
-- Admin dashboard
-- Views refactoring into modular architecture
+10.
 
+Employee Profile
 
-==================================================
-CURRENT VIEWS STRUCTURE
-==================================================
+----------------------------------------------------
 
-attendance/views/
+11.
 
-attendance_views.py
+My Attendance
 
-Contains:
+Employee should only see own attendance.
 
-dashboard()
+----------------------------------------------------
 
-check_in()
+12.
 
-check_out()
+Monthly Attendance Report
 
-calculate_working_hours()
+----------------------------------------------------
 
+13.
 
-admin_views.py
+CSV Export
 
-Contains:
+----------------------------------------------------
 
-admin_dashboard()
+14.
 
+Excel Export
 
-employee_views.py
+====================================================
+IF TIME PERMITS
+====================================================
 
-Contains:
+Attendance Analytics
 
-employee_list()
+Department Wise Report
 
-employee_detail()
+Employee Attendance History
 
-employee_create()
+Average Working Hours
 
-employee_update()
+Top Late Employees
 
-employee_delete()
+Attendance Calendar
 
+Audit Log
 
-==================================================
-CURRENT URLS
-==================================================
+Email Notifications
 
-Working:
+PDF Report
 
-/
+Print Report
 
-dashboard
+Weekend Detection
 
+Holiday Management
 
-/admin-dashboard/
+====================================================
+PROJECT GOAL
+====================================================
 
+This should NOT look like a beginner CRUD project.
 
-/check-in/
+It should look like a real HRMS.
 
+Focus on:
 
-/check-out/
+Scalability
 
+Maintainability
 
-/employees/
+Reusable Code
 
+Professional UI
 
-/employees/create/
+Professional Folder Structure
 
+Production-ready architecture
 
-/employees/<id>/
+Security
 
+GitHub-quality code
 
-/employees/<id>/edit/
+====================================================
+IMPORTANT
+====================================================
 
+Do NOT jump to coding.
 
-/employees/<id>/delete/
+Always explain the database/design first.
 
+Then implement.
 
-==================================================
-CURRENT STATUS
-==================================================
+Whenever modifying a file:
 
-Employee Management module is currently being developed.
+Provide COMPLETE updated file.
 
-Completed:
+Never provide partial code.
 
-employee_list.html
+Never remove existing features.
 
-employee_detail.html
+Preserve everything already working.
 
-attendance/forms.py
+Continue exactly from this point without asking me to repeat previous work.
 
-
-employee_list features:
-
-- Search
-- Department filter
-- Status filter
-- Pagination
-- View/Edit/Delete buttons
-
-
-==================================================
-CURRENT NEXT TASK
-==================================================
-
-Continue from:
-
-Employee CRUD implementation.
-
-
-Next steps:
-
-1.
-
-Update:
-
-attendance/views/employee_views.py
-
-
-Implement:
-
-employee_create()
-
-
-Requirements:
-
-- Use EmployeeForm
-- Create Django User
-- Hash password
-- Create Employee
-- Link User with Employee
-- Success message
-- Redirect to employee list
-
-
-After that:
-
-2.
-
-Implement employee_update()
-
-
-3.
-
-Implement employee_delete()
-
-
-4.
-
-Create:
-
-employee_form.html
-
-5.
-
-Create:
-
-employee_confirm_delete.html
-
-
-==================================================
-CODING RULES
-==================================================
-
-Always tell me:
-
-"Open this file"
-
-Always provide:
-
-Complete updated code
-
-Never provide snippets.
-
-Never skip imports.
-
-Follow:
-
-PEP-8
-
-Django Best Practices
-
-
-Keep:
-
-Business logic in models.
-
-Views clean.
-
-Use forms.py for validation.
-
-
-After every step:
-
-Wait for my confirmation.
-
-Move feature by feature.
-
-Do not jump ahead.We are continuing my Attendance Management System project from the exact point where we stopped. Do not restart the project or change the architecture. Continue as my long-term mentor and follow our existing strategy.
-
-=========================
-PROJECT DETAILS
-=========================
-
-Project Name:
-Attendance Management System
-
-Tech Stack:
-- Python 3.13
-- Django 6.0.7
-- PostgreSQL
-- pgAdmin 4
-- HTML
-- CSS
-- JavaScript (later)
-- Bootstrap (later)
-
-Database:
-attendance_db (PostgreSQL)
-
-Project Goal:
-Build an industry-level Attendance Management System suitable for GitHub, Resume, LinkedIn and placement. Code should follow clean architecture, PEP-8, Django best practices and industry standards.
-
-=========================
-PROJECT STRUCTURE
-=========================
-
-attendance_system/
-attendance/
-    models.py
-    urls.py
-    forms.py
-    admin.py
-    views/
-        __init__.py
-        attendance_views.py
-        employee_views.py
-        admin_views.py
-templates/
-    dashboard/
-    employee/
-static/
-media/
-
-=========================
-CURRENT MODELS
-=========================
-
-Department Model
-- name
-
-Employee Model
-- user (OneToOne with Django User)
-- employee_id (Auto Generated: EMP0001, EMP0002...)
-- first_name
-- last_name
-- email
-- phone_number
-- department
-- date_joined
-- is_active
-- created_at
-- updated_at
-
-Attendance Model
-- employee
-- attendance_date
-- status
-- check_in
-- check_out
-- remarks
-- created_at
-- updated_at
-
-Attendance Rules:
-- Office Start = 9:00 AM
-- Late after = 9:45 AM
-- Half Day after = 1:30 PM
-- Status auto calculated
-- Validation already implemented
-
-=========================
-CURRENT PROGRESS
-=========================
-
-Completed:
-- Django Project Setup
-- PostgreSQL Connected
-- Department Model
-- Employee Model
-- Attendance Model
-- Admin Registration
-- Dashboard Routing
-- Attendance Views
-- Employee CRUD
-- Search
-- Filter
-- Pagination
-- Auto Employee ID Generation
-- Auto Django User Creation
-- Username = Employee ID (EMP000X)
-- Secure Random Password Generation
-- Employee linked with Django User
-- Employee Update Syncs Django User
-- Employee Delete Deletes Django User
-- Email Configuration Added in settings.py
-- Gmail SMTP Configured
-- send_mail() integrated
-- Transaction handling added
-- Success/Error messages added
-
-=========================
-EMAIL SYSTEM
-=========================
-
-Employee account creation should:
-
-1. Generate Employee ID automatically.
-2. Employee ID becomes Username.
-3. Generate secure random password.
-4. Create Django User automatically.
-5. Link Employee and User.
-6. Email login credentials to employee.
-7. Admin should also see generated credentials after creation.
-8. If email sending fails, employee should still be created.
-9. Show warning if email fails.
-
-=========================
-LOGIN STRATEGY
-=========================
-
-Admin:
-- Uses Django Superuser
-- Separate password
-
-Employee:
-- Login using EMP000X
-- Own unique password
-- Password different for every employee
-
-Future:
-- Admin can reset employee password
-- Employee can change password
-- Forgot Password feature
-- First Login Password Change
-- Email Notifications
-
-=========================
-CODING STYLE
-=========================
-
-Always:
-- Give complete updated files.
-- Do not give tiny snippets unless specifically asked.
-- Follow industry standards.
-- Follow PEP-8.
-- Explain only important logic.
-- Never rewrite working code unnecessarily.
-- Keep architecture consistent.
-
-=========================
-CURRENT STATUS
-=========================
-
-employee_views.py has been updated and reviewed.
-
-The file includes:
-- employee_list()
-- employee_detail()
-- employee_create()
-- employee_update()
-- employee_delete()
-
-There was an indentation issue around the email_sent block which has already been corrected.
-
-Runserver works after fixing that issue.
-
-=========================
-NEXT TASKS
-=========================
-
-Continue exactly from here.
-
-Remaining work includes:
-
-1. Review all templates.
-2. Employee Detail Page.
-3. Employee Delete Confirmation.
-4. Login System.
-5. Employee Dashboard.
-6. Check-In.
-7. Check-Out.
-8. Working Hours.
-9. Password Reset by Admin.
-10. Forgot Password.
-11. First Login Password Change.
-12. Attendance Reports.
-13. Excel Export.
-14. PDF Export.
-15. Analytics Dashboard.
-16. Final UI Improvements.
-17. GitHub Ready Project.
-
-Do not ask me to explain previous progress again. Treat this prompt as the complete context of the project and continue from this exact stage.
+Assume all previous discussions, design decisions and architecture are already known.
