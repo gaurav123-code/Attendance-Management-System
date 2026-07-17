@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
@@ -11,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import secrets
 import string
 
+from attendance.decorators import admin_required
 from attendance.forms import EmployeeForm
 from attendance.models import Department, Employee
 
@@ -32,7 +32,7 @@ def generate_password(length=10):
     )
 
 
-@login_required
+@admin_required
 def employee_list(request):
 
     employees = (
@@ -131,7 +131,7 @@ def employee_list(request):
     )
 
 
-@login_required
+@admin_required
 def employee_detail(request, pk):
 
     employee = get_object_or_404(
@@ -163,7 +163,7 @@ def employee_detail(request, pk):
     )
 
 
-@login_required
+@admin_required
 @transaction.atomic
 def employee_create(request):
 
@@ -279,6 +279,7 @@ def employee_create(request):
             except Exception:
 
                 email_sent = False
+
             if email_sent:
 
                 messages.success(
@@ -334,26 +335,20 @@ def employee_create(request):
     )
 
 
-@login_required
+@admin_required
 @transaction.atomic
 def employee_update(request, pk):
 
     employee = get_object_or_404(
-
         Employee,
-
         pk=pk,
-
     )
 
     if request.method == "POST":
 
         form = EmployeeForm(
-
             request.POST,
-
             instance=employee,
-
         )
 
         if form.is_valid():
@@ -363,21 +358,15 @@ def employee_update(request, pk):
             if employee.user:
 
                 employee.user.first_name = employee.first_name
-
                 employee.user.last_name = employee.last_name
-
                 employee.user.email = employee.email
-
                 employee.user.is_active = employee.is_active
 
                 employee.user.save()
 
             messages.success(
-
                 request,
-
                 "Employee updated successfully.",
-
             )
 
             return redirect(
@@ -387,56 +376,56 @@ def employee_update(request, pk):
     else:
 
         form = EmployeeForm(
-            instance=employee
+            instance=employee,
         )
 
     return render(
-
         request,
-
         "employee/employee_form.html",
-
         {
-
             "form": form,
-
             "employee": employee,
-
             "title": "Update Employee",
-
         },
-
     )
-
-
-@login_required
+    
+@admin_required
 @transaction.atomic
 def employee_delete(request, pk):
 
     employee = get_object_or_404(
-
         Employee,
-
         pk=pk,
-
     )
 
     if request.method == "POST":
 
-        user = employee.user
+        if not employee.is_active:
 
-        employee.delete()
+            messages.info(
+                request,
+                "Employee is already inactive.",
+            )
 
-        if user:
+            return redirect(
+                "employee_list"
+            )
 
-            user.delete()
+        employee.is_active = False
+        employee.save(
+            update_fields=["is_active"]
+        )
+
+        if employee.user:
+
+            employee.user.is_active = False
+            employee.user.save(
+                update_fields=["is_active"]
+            )
 
         messages.success(
-
             request,
-
-            "Employee deleted successfully.",
-
+            "Employee deactivated successfully.",
         )
 
         return redirect(
@@ -444,15 +433,61 @@ def employee_delete(request, pk):
         )
 
     return render(
-
         request,
-
         "employee/employee_confirm_delete.html",
-
         {
-
             "employee": employee,
-
         },
+    )
 
+
+@admin_required
+@transaction.atomic
+def employee_reactivate(request, pk):
+
+    employee = get_object_or_404(
+        Employee,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        if employee.is_active:
+
+            messages.info(
+                request,
+                "Employee is already active.",
+            )
+
+            return redirect(
+                "employee_list"
+            )
+
+        employee.is_active = True
+        employee.save(
+            update_fields=["is_active"]
+        )
+
+        if employee.user:
+
+            employee.user.is_active = True
+            employee.user.save(
+                update_fields=["is_active"]
+            )
+
+        messages.success(
+            request,
+            "Employee reactivated successfully.",
+        )
+
+        return redirect(
+            "employee_list"
+        )
+
+    return render(
+        request,
+        "employee/employee_confirm_reactivate.html",
+        {
+            "employee": employee,
+        },
     )
