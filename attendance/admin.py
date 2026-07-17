@@ -5,8 +5,15 @@ from .models import Attendance, Department, Employee
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
-    search_fields = ("name",)
+
+    list_display = (
+        "id",
+        "name",
+    )
+
+    search_fields = (
+        "name",
+    )
 
 
 @admin.register(Employee)
@@ -56,9 +63,14 @@ class EmployeeAdmin(admin.ModelAdmin):
         "date_joined",
     )
 
-    ordering = ("employee_id",)
+    ordering = (
+        "employee_id",
+    )
 
-    list_select_related = ("department", "user")
+    list_select_related = (
+        "department",
+        "user",
+    )
 
     list_per_page = 20
 
@@ -67,35 +79,62 @@ class EmployeeAdmin(admin.ModelAdmin):
 class AttendanceAdmin(admin.ModelAdmin):
 
     readonly_fields = (
+        "working_hours",
         "created_at",
         "updated_at",
     )
 
     list_display = (
-        "employee",
+        "employee_id_display",
+        "employee_name",
         "attendance_date",
         "status",
         "check_in",
         "check_out",
+        "working_hours",
     )
 
     search_fields = (
         "employee__employee_id",
         "employee__first_name",
         "employee__last_name",
+        "employee__email",
     )
 
     list_filter = (
         "status",
         "attendance_date",
+        "employee__department",
     )
+
+    date_hierarchy = "attendance_date"
 
     list_select_related = (
         "employee",
+        "employee__department",
     )
 
     autocomplete_fields = (
         "employee",
     )
 
+    ordering = (
+        "-attendance_date",
+        "employee",
+    )
+
     list_per_page = 20
+
+    @admin.display(
+        ordering="employee__employee_id",
+        description="Employee ID",
+    )
+    def employee_id_display(self, obj):
+        return obj.employee.employee_id
+
+    @admin.display(
+        ordering="employee__first_name",
+        description="Employee Name",
+    )
+    def employee_name(self, obj):
+        return obj.employee.full_name
