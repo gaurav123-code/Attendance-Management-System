@@ -14,16 +14,23 @@ from .employee_views import (
     employee_create,
     employee_update,
     employee_delete,
+    employee_reactivate,
 )
 
+
 __all__ = [
+
     "dashboard",
     "check_in",
     "check_out",
+
     "admin_dashboard",
+
     "employee_list",
     "employee_detail",
     "employee_create",
     "employee_update",
     "employee_delete",
+    "employee_reactivate",
+
 ]
