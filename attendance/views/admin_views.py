@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
@@ -8,7 +9,18 @@ from attendance.models import Attendance, Employee
 
 @login_required
 def admin_dashboard(request):
+    """
+    Admin Dashboard
+
+    Only Django Superusers are allowed
+    to access this page.
+    """
+
     if not request.user.is_superuser:
+        messages.error(
+            request,
+            "You are not authorized to access the Admin Dashboard.",
+        )
         return redirect("dashboard")
 
     today = date.today()
