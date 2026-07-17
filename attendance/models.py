@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import datetime, time
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -58,8 +58,6 @@ class Employee(models.Model):
         default=True,
     )
 
-    # -------- Authentication Fields --------
-
     must_change_password = models.BooleanField(
         default=True,
     )
@@ -68,8 +66,6 @@ class Employee(models.Model):
         null=True,
         blank=True,
     )
-
-    # ---------------------------------------
 
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -81,6 +77,7 @@ class Employee(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.employee_id:
+
             last_employee = (
                 Employee.objects
                 .order_by("-id")
@@ -91,7 +88,9 @@ class Employee(models.Model):
                 last_id = int(
                     last_employee.employee_id[3:]
                 )
+
                 new_id = last_id + 1
+
             else:
                 new_id = 1
 
@@ -154,6 +153,11 @@ class Attendance(models.Model):
         blank=True,
     )
 
+    working_hours = models.DurationField(
+        null=True,
+        blank=True,
+    )
+
     remarks = models.TextField(
         blank=True,
     )
@@ -196,32 +200,62 @@ class Attendance(models.Model):
         self._validate_check_times()
 
     def save(self, *args, **kwargs):
+
         self._calculate_status()
+        self._calculate_working_hours()
 
         self.full_clean()
 
         super().save(*args, **kwargs)
 
     def _calculate_status(self):
+
         if not self.check_in:
             return
 
         if self.check_in <= self.LATE_AFTER:
+
             self.status = (
                 self.AttendanceStatus.PRESENT
             )
 
         elif self.check_in <= self.HALF_DAY_AFTER:
+
             self.status = (
                 self.AttendanceStatus.LATE
             )
 
         else:
+
             self.status = (
                 self.AttendanceStatus.HALF_DAY
             )
 
+    def _calculate_working_hours(self):
+
+        if self.check_in and self.check_out:
+
+            check_in_datetime = datetime.combine(
+                self.attendance_date,
+                self.check_in,
+            )
+
+            check_out_datetime = datetime.combine(
+                self.attendance_date,
+                self.check_out,
+            )
+
+            self.working_hours = (
+                check_out_datetime
+                -
+                check_in_datetime
+            )
+
+        else:
+            self.working_hours = None
+
     def _validate_status(self):
+
         if self.check_in:
             return
 
@@ -249,8 +283,11 @@ class Attendance(models.Model):
             )
 
     def _validate_check_times(self):
+
         if self.check_in and self.check_out:
+
             if self.check_out <= self.check_in:
+
                 raise ValidationError(
                     {
                         "check_out": (
