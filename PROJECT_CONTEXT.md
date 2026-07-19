@@ -1,62 +1,233 @@
-You are continuing my long-term Attendance Management System project exactly from where we left off. Treat this as the continuation of the same conversation.
+# ATTENDANCE MANAGEMENT SYSTEM - FINAL PROJECT CONTINUATION PROMPT
 
-====================================================
-PROJECT OVERVIEW
-====================================================
+IMPORTANT:
+
+Ye meri previous development chat ka DIRECT CONTINUATION hai.
+
+Is prompt ko hi complete project memory samjho.
+
+Mujhse dobara mat poochna:
+
+- project kya hai
+- tech stack kya hai
+- folder structure kya hai
+- models kya hain
+- kya complete hua hai
+- kya pending hai
+- requirements kya hain
+- deadline kya hai
+- development style kya hai
+
+Sab kuch niche diya hua hai.
+
+Tumhe isi exact stage se continue karna hai.
+
+
+======================================================================
+PROJECT INFORMATION
+======================================================================
 
 Project Name:
-Attendance Management System
 
-Purpose:
-A professional, industry-level Attendance Management System for my college final project. It should be good enough for GitHub, LinkedIn, Resume, Placement interviews and College Viva.
+Attendance Management System (Corporate HRMS)
 
-Technology Stack:
-- Python 3.13
-- Django 6
-- PostgreSQL
-- pgAdmin 4
-- HTML
-- CSS
-- Bootstrap 5
-- JavaScript (only where required)
+
+Deadline:
+
+AAJ HI PROJECT COMPLETE KARNA HAI.
+
+
+Priority:
+
+1. Completion
+2. Bug fixing
+3. Required features implementation
+4. Testing
+5. Production level clean code
+
+
+Tum mere development partner ho.
+
+Project complete hone tak:
+
+- No unnecessary explanation
+- No Django theory
+- No lectures
+- No redesign discussion
+- Direct implementation
+
+
+Agar mai bolu:
+
+"next"
+
+to next required file ka COMPLETE UPDATED CODE do.
+
+
+Agar mai bolu:
+
+"continue"
+
+to wahi task continue karo.
+
+
+Agar mai kisi file ka naam bheju:
+
+example:
+
+attendance/views/auth_views.py
+
+
+to:
+
+sirf us file ka COMPLETE UPDATED CODE do.
+
+
+Rules:
+
+Kabhi bhi:
+
+- partial code
+- snippets
+- sirf changed lines
+- pseudo code
+
+mat dena.
+
+
+Hamesha:
+
+COMPLETE UPDATED FILE
+
+
+Agar file badi hai:
+
+Part 1
+Part 2
+Part 3
+
+me complete file dena.
+
+
+Response:
+
+Fast and direct hona chahiye.
+
+
+======================================================================
+TECH STACK
+======================================================================
+
+Backend:
+
+Python 3.13.7
+
+Django 6.x
+
 
 Database:
-attendance_db (PostgreSQL)
 
-====================================================
-MENTORING STYLE
-====================================================
+PostgreSQL
 
-You are my mentor, not just a code generator.
 
-Always follow this workflow:
+Database Tool:
 
-1. Understand the requirement.
-2. Explain database/design first.
-3. Explain why we are doing something.
-4. Follow Django best practices.
-5. Follow PEP-8.
-6. Follow industry standards.
-7. Never break existing code.
-8. Build feature by feature.
-9. Preserve project architecture.
-10. Keep GitHub-quality code.
+pgAdmin 4
 
-Whenever modifying any file:
 
-- Give COMPLETE updated file.
-- Never give partial snippets unless requested.
-- Preserve existing functionality.
-- Never rename variables unnecessarily.
-- Never remove working features.
-- Mention which files are changing.
-- Explain the changes before code.
+Frontend:
 
-Always think like a Senior Django Developer.
+HTML
+CSS
+Bootstrap 5
 
-====================================================
-PROJECT STRUCTURE
-====================================================
+
+Timezone:
+
+Asia/Kolkata
+
+
+Database:
+
+attendance_db
+
+
+======================================================================
+PROJECT OBJECTIVE
+======================================================================
+
+Corporate level Attendance Management System banana hai.
+
+Features:
+
+Admin
+
+Employee
+
+Authentication
+
+Attendance Tracking
+
+Dashboard
+
+Reports
+
+Export
+
+Password Management
+
+Manual Attendance
+
+Analytics
+
+
+Code quality:
+
+- PEP8
+- Clean Code
+- Industry Standard
+- Reusable
+
+
+======================================================================
+CURRENT PROJECT STRUCTURE
+======================================================================
+
+
+attendance/
+
+    admin.py
+
+    apps.py
+
+    decorators.py
+
+    forms.py
+
+    models.py
+
+    urls.py
+
+    migrations/
+
+
+    views/
+
+        __init__.py
+
+        admin_views.py
+
+        attendance_views.py
+
+        auth_views.py
+
+        employee_views.py
+
+        report_views.py
+
+        export_views.py
+
+
 
 attendance_system/
 
@@ -64,49 +235,45 @@ attendance_system/
 
     urls.py
 
-    asgi.py
-
     wsgi.py
 
-attendance/
 
-    admin.py
-
-    models.py
-
-    urls.py
-
-    forms.py
-
-    decorators.py
-
-    views/
-
-        auth_views.py
-
-        admin_views.py
-
-        employee_views.py
 
 templates/
 
+
     base.html
 
-    registration/
-
-        login.html
 
     admin_dashboard/
 
         home.html
 
+
     dashboard/
 
         home.html
 
+
+    attendance/
+
+        attendance_list.html
+
+        attendance_manage.html
+
+        attendance_detail.html
+
+        my_attendance.html
+
+        mark_attendance.html
+
+
+
     employee/
 
         employee_list.html
+
+        inactive_employee_list.html
 
         employee_form.html
 
@@ -114,416 +281,679 @@ templates/
 
         employee_confirm_delete.html
 
-        employee_confirm_reactivate.html
 
-====================================================
-COMPLETED MODULES
-====================================================
 
-✔ PostgreSQL Connected
+    registration/
 
-✔ Django Configured
+        login.html
 
-✔ Custom User Authentication
+        change_password.html
 
-✔ Login
+        password_reset_form.html
 
-✔ Logout
+        password_reset_done.html
 
-✔ Role Based Authentication
+        password_reset_confirm.html
 
-✔ Admin Dashboard
+        password_reset_complete.html
 
-✔ Employee Dashboard
 
-✔ Department Module
 
-✔ Employee Module
+    reports/
 
-Employee Model includes:
 
-- employee_id auto generation
-- username auto generation
-- EMP0001 format
+static/
+
+    css/
+
+    js/
+
+    images/
+
+
+======================================================================
+DATABASE / MODELS
+======================================================================
+
+
+Models:
+
+Department
+
+Employee
+
+Attendance
+
+
+
+Employee Fields:
+
+- user
+- employee_id
 - first_name
 - last_name
 - email
 - phone_number
 - department
-- joining_date
-- timestamps
+- date_joined
 - is_active
+- must_change_password
+- password_changed_at
+- password_reset_token
+- password_reset_token_expires_at
+- created_at
+- updated_at
 
-Soft Delete implemented.
 
-Inactive employees are hidden by default.
 
-Delete means deactivate.
+Attendance Fields:
 
-Reactivate feature implemented.
+- employee
+- attendance_date
+- status
+- check_in
+- check_out
+- working_hours
+- remarks
+- created_at
+- updated_at
 
-Employee IDs are never reused.
 
-Username never changes.
 
-Temporary password generation implemented.
+Attendance model already contains:
 
-Employee login credentials email implemented.
+- calculate_status()
+- calculate_working_hours()
+- save()
 
-====================================================
-EMPLOYEE MANAGEMENT
-====================================================
 
-Completed:
-
-✔ Employee List
-
-✔ Add Employee
-
-✔ Edit Employee
-
-✔ View Employee
-
-✔ Soft Delete
-
-✔ Reactivate
-
-✔ Search
-
-✔ Department Filter
-
-✔ Status Filter
-
-✔ Pagination
-
-✔ Bootstrap UI
-
-====================================================
-BUGS ALREADY SOLVED
-====================================================
-
-✔ TemplateSyntaxError
-
-Correct syntax:
-
-{% if selected_status == "active" %}
-
-----------------------------------------------------
-
-✔ TemplateDoesNotExist
-
-Reason:
-
-base.html was in wrong folder.
-
-Moved to:
-
-templates/base.html
-
-----------------------------------------------------
-
-✔ "```html" showing on webpage
-
-Reason:
-
-Markdown code fence pasted accidentally.
-
-Removed.
-
-----------------------------------------------------
-
-✔ Django messages now handled properly.
-
-base.html displays Bootstrap alerts.
-
-====================================================
-CURRENT PROJECT STATUS
-====================================================
-
-Employee Module is considered stable.
-
-Next major module is Attendance.
-
-====================================================
+======================================================================
 BUSINESS RULES
-====================================================
+======================================================================
+
 
 Office Start:
 
 09:00 AM
 
-Late:
 
-After 09:45 AM
+Attendance Rules:
 
-Half Day:
 
-After 01:30 PM
+09:00 - 09:45
 
-Absent:
+PRESENT
 
-No Check In.
 
-Admin can mark absent after office closes.
+09:46 - 01:30
 
-====================================================
-NEXT FEATURES (STRICT ORDER)
-====================================================
+LATE
 
-PHASE 1
 
-1.
+After 01:30
 
-Forgot Password
+HALF DAY
 
-Complete email-based password reset.
 
-Use Django's secure password reset flow.
+No Check In:
 
-----------------------------------------------------
 
-2.
+Before 6 PM:
 
-Change Password
+PENDING
 
-Employee can change password.
 
-Admin can also change own password.
+After 6 PM:
 
-Current password verification.
+ABSENT
 
-Password confirmation.
 
-Secure hashing.
+Admin:
 
-----------------------------------------------------
+6 PM ke baad remaining employees ko absent mark kar sake.
 
-3.
 
-Attendance Model
+Working Hours:
 
-Fields should include:
+check_out - check_in
 
-Employee
 
-Date
+======================================================================
+COMPLETED FEATURES
+======================================================================
 
-Check In
 
-Check Out
+DONE:
 
-Working Hours
+✔ Django setup
 
-Status
+✔ PostgreSQL connected
 
-Late
+✔ Migrations complete
 
-Half Day
+✔ Superuser created
 
-Absent
+✔ Login system
 
-Remarks
+✔ Employee ID login
 
-Unique attendance per employee per day.
+✔ Admin Dashboard
 
-----------------------------------------------------
+✔ Employee Dashboard
 
-4.
+✔ Department CRUD
 
-Check In
+✔ Employee CRUD
 
-----------------------------------------------------
+✔ Search
 
-5.
+✔ Filters
 
-Check Out
+✔ Pagination
 
-----------------------------------------------------
+✔ Employee Detail
 
-6.
+✔ Inactive Employee
 
-Attendance List
+✔ Attendance Model
 
-----------------------------------------------------
+✔ Attendance CRUD
 
-7.
+✔ Check In
 
-Attendance Search
+✔ Check Out
 
-Search by:
+✔ Working Hours calculation
 
-Employee
+✔ Auto Employee ID
 
-Department
+✔ Password Change
 
-Status
+✔ Forgot Password structure
 
-Date
+✔ Email sending working
 
-----------------------------------------------------
 
-8.
+======================================================================
+CURRENT DATABASE STATE
+======================================================================
 
-Date Wise Attendance Report
 
-Admin selects a date.
+Superuser:
 
-System should display:
+username:
 
-Total Employees
+Gaurav
 
-Present
 
-Absent
+is_superuser=True
 
-Late
 
-Half Day
+Employee Records:
 
-Along with complete employee details.
+EMP0001 -> EMP0001
 
-Example:
+EMP0002 -> EMP0002
 
-15 July
+EMP0003 -> EMP0003
 
-Present : 42
+EMP0004 -> EMP0004
 
-Absent : 7
+EMP0005 -> EMP0005
 
-Late : 5
+EMP0006 -> EMP0006
 
-Half Day : 3
+EMP0008 -> yoe58
 
-Then show detailed employee table.
+EMP0009 -> Sneha
 
-----------------------------------------------------
 
-9.
+
+Important:
+
+Superuser ka Employee record nahi hai.
+
+
+======================================================================
+CURRENT FIXES ALREADY DONE
+======================================================================
+
+
+Password validation:
+
+DONE
+
+
+Change Password:
+
+DONE
+
+Working correctly.
+
+
+Forgot Password:
+
+Email perfectly ja raha hai.
+
+Is email system ko change nahi karna.
+
+Only reset link issue fix karna hai.
+
+
+======================================================================
+CURRENT ISSUES / REQUIRED MODIFICATIONS
+======================================================================
+
+
+ISSUE 1:
+
+Forgot Password email link open karne par:
+
+"This site can't be reached"
+
+aa raha hai.
+
+
+Need:
+
+Forgot password link properly open ho aur employee password reset kar sake.
+
+
+
+Do not change email sending logic.
+
+
+
+======================================================================
+
+
+ISSUE 2:
+
+Employee Check-In working hai.
+
+Database me attendance create ho rahi hai.
+
+Dobara check-in karne par:
+
+"You have already checked in today."
+
+message aa raha hai.
+
+
+But:
+
+
+Employee dashboard ke:
+
+"Today's Attendance"
+
+block me data show nahi ho raha.
+
+
+Need:
+
+Employee dashboard me today's attendance:
+
+- check in time
+- status
+- working hours
+- checkout
+
+proper show hona chahiye.
+
+
+
+======================================================================
+
+
+ISSUE 3:
+
+Admin Dashboard:
+
+Recent Attendance me realtime update nahi aa raha.
+
+
+Database me attendance hai.
+
+Admin dashboard me attendance update nahi ho rahi.
+
+
+Need:
+
+Admin dashboard recent attendance dynamic queryset se show ho.
+
+
+======================================================================
+
+
+ISSUE 4:
+
+Reports system complete karna hai.
+
+
+Need reports:
+
+
+Daily Report
+
+Monthly Report
+
+Department Report
+
+Employee Report
+
+Present Report
+
+Late Report
+
+Half Day Report
+
+Absent Report
+
+Working Hours Report
 
 Dashboard Statistics
 
-Cards:
 
-Total Employees
 
-Present Today
+Reports me:
 
-Absent Today
+date filter
 
-Late Today
+employee filter
 
-Half Day Today
+department filter
 
-Departments
 
-Recent Attendance
+hona chahiye.
 
-----------------------------------------------------
 
-10.
 
-Employee Profile
+======================================================================
 
-----------------------------------------------------
 
-11.
+ISSUE 5:
 
-My Attendance
+Report generate hone par graph bhi chahiye.
 
-Employee should only see own attendance.
 
-----------------------------------------------------
+Requirement:
 
-12.
 
-Monthly Attendance Report
+Graph:
 
-----------------------------------------------------
+X Axis:
 
-13.
+Date
 
-CSV Export
 
-----------------------------------------------------
+Y Axis:
 
-14.
+Number of Employees
 
-Excel Export
 
-====================================================
-IF TIME PERMITS
-====================================================
+Example:
 
-Attendance Analytics
+Date wise attendance graph.
 
-Department Wise Report
 
-Employee Attendance History
+Use suitable Django compatible chart library.
 
-Average Working Hours
+Prefer:
 
-Top Late Employees
+Chart.js
 
-Attendance Calendar
 
-Audit Log
+Graph report page par generate hona chahiye.
 
-Email Notifications
 
-PDF Report
 
-Print Report
+======================================================================
 
-Weekend Detection
 
-Holiday Management
+ISSUE 6:
 
-====================================================
-PROJECT GOAL
-====================================================
+Admin password management.
 
-This should NOT look like a beginner CRUD project.
 
-It should look like a real HRMS.
+Need:
 
-Focus on:
+Admin employee ka password change kar sake.
 
-Scalability
 
-Maintainability
+Feature:
 
-Reusable Code
+Admin Employee Detail/Edit page se:
 
-Professional UI
+- password reset
+- new password set
 
-Professional Folder Structure
 
-Production-ready architecture
+kar sake.
 
-Security
 
-GitHub-quality code
 
-====================================================
-IMPORTANT
-====================================================
+======================================================================
 
-Do NOT jump to coding.
 
-Always explain the database/design first.
+ISSUE 7:
 
-Then implement.
+Manual Attendance.
 
-Whenever modifying a file:
 
-Provide COMPLETE updated file.
+Need:
 
-Never provide partial code.
+Admin manually attendance mark kar sake.
 
-Never remove existing features.
 
-Preserve everything already working.
+Reason:
 
-Continue exactly from this point without asking me to repeat previous work.
+Agar office me:
 
-Assume all previous discussions, design decisions and architecture are already known.
+- electricity issue
+- system issue
+- biometric issue
+- network problem
+
+
+ho jaye toh admin attendance manually mark kar sake.
+
+
+Admin options:
+
+
+Employee select
+
+Date select
+
+Status select:
+
+PRESENT
+
+LATE
+
+HALF DAY
+
+ABSENT
+
+
+Check in time
+
+Check out time
+
+Remarks
+
+
+save kar sake.
+
+
+
+======================================================================
+
+
+ISSUE 8:
+
+Absent automation.
+
+
+Current:
+
+6 PM ke baad absent marking hai.
+
+
+Need:
+
+Verify and improve:
+
+- pending employees identify
+- absent mark correctly
+- existing pending records update ho
+
+
+======================================================================
+
+
+======================================================================
+IMPORTANT FILES CURRENTLY WORKED ON
+======================================================================
+
+
+attendance/views/auth_views.py
+
+
+Current status:
+
+Working.
+
+
+Contains:
+
+- EmployeeIDAuthenticationForm
+- CustomLoginView
+- CustomLogoutView
+- Password Reset Views
+- CustomPasswordChangeView
+
+
+
+attendance/forms.py
+
+
+Contains:
+
+- EmployeeForm
+
+- AttendanceForm
+
+- DepartmentForm
+
+- CustomPasswordChangeForm
+
+
+
+attendance/views/attendance_views.py
+
+
+Contains:
+
+- dashboard
+
+- check_in
+
+- check_out
+
+- my_attendance
+
+- attendance_list
+
+- attendance_manage
+
+- mark_attendance
+
+- absent_mark
+
+- attendance_detail
+
+
+
+======================================================================
+CURRENT WORKING STRATEGY
+======================================================================
+
+
+Ab project completion ke liye:
+
+
+Step 1:
+
+Fix remaining bugs
+
+
+Step 2:
+
+Complete password features
+
+
+Step 3:
+
+Reports module
+
+
+Step 4:
+
+Charts
+
+
+Step 5:
+
+Admin manual attendance
+
+
+Step 6:
+
+Admin password reset
+
+
+Step 7:
+
+Export CSV Excel PDF
+
+
+Step 8:
+
+UI polish
+
+
+Step 9:
+
+Final testing
+
+
+======================================================================
+FINAL INSTRUCTION
+======================================================================
+
+
+Mujhe dobara project explain karne ko mat bolna.
+
+
+Mujhe direct developer ki tarah handle karna.
+
+
+Jab mai bolu:
+
+"code do"
+
+to bina extra explanation ke:
+
+COMPLETE UPDATED FILE CODE dena.
+
+
+Existing folder structure aur architecture maintain karna.
+
+
+Project ko aaj hi complete karna hai.
+
+Hum completion ke bahut close hain.
+
+Fast, accurate aur direct implementation chahiye.
