@@ -1,55 +1,349 @@
+from django import forms
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import authenticate
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+    PasswordChangeView,
+)
+from ..forms import CustomPasswordChangeForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views import View
+from django.utils import timezone
 
+from ..models import Employee
+
+
+# ==========================================================
+# Employee ID Authentication Form
+# ==========================================================
+
+class EmployeeIDAuthenticationForm(forms.Form):
+
+    username = forms.CharField(
+        label="Employee ID",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Employee ID",
+                "autocomplete": "username",
+            }
+        ),
+    )
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Password",
+                "autocomplete": "current-password",
+            }
+        )
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        self.user_cache = None
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        login_id = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        if login_id and password:
+
+            try:
+                employee = Employee.objects.get(
+                    employee_id=login_id
+                )
+
+                username = employee.user.username
+
+            except Employee.DoesNotExist:
+                username = login_id
+
+            self.user_cache = authenticate(
+                self.request,
+                username=username,
+                password=password,
+            )
+
+            if self.user_cache is None:
+                raise forms.ValidationError(
+                    "Invalid Employee ID or Password."
+                )
+
+            if not self.user_cache.is_active:
+                raise forms.ValidationError(
+                    "This account is inactive."
+                )
+
+        return cleaned_data
+
+    def get_user(self):
+        return self.user_cache
+
+
+# ==========================================================
+# Login View
+# ==========================================================
 
 class CustomLoginView(LoginView):
-    """
-    Custom login view for Admin and Employee.
-    """
 
     template_name = "registration/login.html"
 
+    authentication_form = EmployeeIDAuthenticationForm
+
     redirect_authenticated_user = True
 
-    def get_success_url(self):
 
-        if self.request.user.is_superuser:
-            return reverse_lazy("admin_dashboard")
+    def form_valid(self, form):
 
-        return reverse_lazy("dashboard")
+        response = super().form_valid(form)
 
-    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+
+
+        if user.is_superuser:
+            return redirect(
+                "admin_dashboard"
+            )
+
+
+        try:
+
+            employee = Employee.objects.get(
+                user=user
+            )
+
+
+            if employee.must_change_password:
+
+                return redirect(
+                    "change_password"
+                )
+
+
+        except Employee.DoesNotExist:
+            pass
+
+
+        return redirect(
+            "dashboard"
+        )
+
+
+
+# ==========================================================
+# Global Password Change Protection
+# ==========================================================
+
+def password_change_required(view_func):
+
+    def wrapper(request, *args, **kwargs):
 
         if request.user.is_authenticated:
 
             if request.user.is_superuser:
-                return redirect("admin_dashboard")
+                return view_func(
+                    request,
+                    *args,
+                    **kwargs
+                )
 
-            return redirect("dashboard")
+
+            try:
+
+                employee = Employee.objects.get(
+                    user=request.user
+                )
+
+
+                if employee.must_change_password:
+
+                    if request.resolver_match.url_name != "change_password":
+
+                        return redirect(
+                            "change_password"
+                        )
+
+
+            except Employee.DoesNotExist:
+                pass
+
+
+        return view_func(
+            request,
+            *args,
+            **kwargs
+        )
+
+
+    return wrapper
+
+
+
+# ==========================================================
+# Logout View
+# ==========================================================
+
+class CustomLogoutView(LogoutView):
+
+    next_page = reverse_lazy(
+        "login"
+    )
+
+
+    def dispatch(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        messages.success(
+            request,
+            "You have been logged out successfully."
+        )
 
         return super().dispatch(
             request,
             *args,
-            **kwargs,
+            **kwargs
         )
 
 
-class CustomLogoutView(View):
-    """
-    Custom logout view.
-    """
 
-    def post(self, request):
+# ==========================================================
+# Password Reset
+# ==========================================================
 
-        logout(request)
+class CustomPasswordResetView(
+    PasswordResetView
+):
+
+    template_name = (
+        "registration/password_reset_form.html"
+    )
+
+    email_template_name = (
+        "registration/password_reset_email.html"
+    )
+
+    subject_template_name = (
+        "registration/password_reset_subject.txt"
+    )
+
+    success_url = reverse_lazy(
+        "password_reset_done"
+    )
+
+
+
+class CustomPasswordResetDoneView(
+    PasswordResetDoneView
+):
+
+    template_name = (
+        "registration/password_reset_done.html"
+    )
+
+
+
+class CustomPasswordResetConfirmView(
+    PasswordResetConfirmView
+):
+
+    template_name = (
+        "registration/password_reset_confirm.html"
+    )
+
+    success_url = reverse_lazy(
+        "password_reset_complete"
+    )
+
+
+
+class CustomPasswordResetCompleteView(
+    PasswordResetCompleteView
+):
+
+    template_name = (
+        "registration/password_reset_complete.html"
+    )
+
+
+
+# ==========================================================
+# Password Change
+# ==========================================================
+
+class CustomPasswordChangeView(
+    PasswordChangeView
+):
+
+    template_name = (
+        "registration/change_password.html"
+    )
+
+    success_url = reverse_lazy(
+        "dashboard"
+    )
+    
+    form_class = CustomPasswordChangeForm
+
+
+    def form_valid(self, form):
+
+        response = super().form_valid(
+            form
+        )
+
+
+        try:
+
+            employee = Employee.objects.get(
+                user=self.request.user
+            )
+
+
+            employee.must_change_password = False
+
+            employee.password_changed_at = (
+                timezone.now()
+            )
+
+            employee.save()
+
+
+        except Employee.DoesNotExist:
+            pass
+
+
 
         messages.success(
-            request,
-            "You have been logged out successfully.",
+            self.request,
+            "Password changed successfully."
         )
 
-        return redirect("login")
+
+        return response
+
+
+
+# ==========================================================
+# Wrapper Function
+# ==========================================================
+
+def change_password(request):
+
+    return CustomPasswordChangeView.as_view()(
+        request
+    )
