@@ -1,15 +1,15 @@
 from datetime import datetime, time
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class Department(models.Model):
-    name = models.CharField(
-        max_length=100,
-        unique=True,
-    )
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -18,281 +18,187 @@ class Department(models.Model):
 class Employee(models.Model):
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE,
-        related_name="employee",
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE
     )
 
     employee_id = models.CharField(
-        max_length=10,
+        max_length=20,
         unique=True,
-        editable=False,
+        editable=False
     )
 
-    first_name = models.CharField(
-        max_length=50,
-    )
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
 
-    last_name = models.CharField(
-        max_length=50,
-    )
-
-    email = models.EmailField(
-        unique=True,
-    )
+    email = models.EmailField(unique=True)
 
     phone_number = models.CharField(
         max_length=15,
+        unique=True
     )
 
     department = models.ForeignKey(
         Department,
         on_delete=models.PROTECT,
-        related_name="employees",
+        related_name="employees"
     )
 
     date_joined = models.DateField()
 
-    is_active = models.BooleanField(
-        default=True,
-    )
+    is_active = models.BooleanField(default=True)
 
     must_change_password = models.BooleanField(
-        default=True,
+        default=True
     )
 
     password_changed_at = models.DateTimeField(
         null=True,
-        blank=True,
+        blank=True
+    )
+
+    password_reset_token = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    password_reset_token_expires_at = models.DateTimeField(
+        null=True,
+        blank=True
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True,
+        auto_now=True
     )
 
     def save(self, *args, **kwargs):
         if not self.employee_id:
-
-            last_employee = (
-                Employee.objects
-                .order_by("-id")
-                .first()
-            )
+            last_employee = Employee.objects.order_by(
+                "-id"
+            ).first()
 
             if last_employee:
-                last_id = int(
-                    last_employee.employee_id[3:]
+                last_number = int(
+                    last_employee.employee_id.replace(
+                        "EMP",
+                        ""
+                    )
                 )
-
-                new_id = last_id + 1
-
+                new_number = last_number + 1
             else:
-                new_id = 1
+                new_number = 1
 
-            self.employee_id = (
-                f"EMP{new_id:04d}"
-            )
+            self.employee_id = f"EMP{new_number:04d}"
 
         super().save(*args, **kwargs)
 
-    @property
-    def full_name(self):
-        return (
-            f"{self.first_name} "
-            f"{self.last_name}"
-        )
-
     def __str__(self):
-        return (
-            f"{self.employee_id} - "
-            f"{self.full_name}"
-        )
+        return f"{self.first_name} {self.last_name}"
 
 
 class Attendance(models.Model):
 
-    OFFICE_START_TIME = time(9, 0)
-    LATE_AFTER = time(9, 45)
-    HALF_DAY_AFTER = time(13, 30)
+    PRESENT = "PRESENT"
+    LATE = "LATE"
+    HALF_DAY = "HALF_DAY"
+    ABSENT = "ABSENT"
 
-    class AttendanceStatus(models.TextChoices):
-        PRESENT = "P", "Present"
-        ABSENT = "A", "Absent"
-        LATE = "L", "Late"
-        HALF_DAY = "H", "Half Day"
-        LEAVE = "LV", "Leave"
+    STATUS_CHOICES = [
+        (PRESENT, "Present"),
+        (LATE, "Late"),
+        (HALF_DAY, "Half Day"),
+        (ABSENT, "Absent"),
+    ]
 
     employee = models.ForeignKey(
         Employee,
-        on_delete=models.PROTECT,
-        related_name="attendances",
+        on_delete=models.CASCADE,
+        related_name="attendances"
     )
 
     attendance_date = models.DateField(
-        db_index=True,
+        default=timezone.now
     )
 
     status = models.CharField(
-        max_length=2,
-        choices=AttendanceStatus.choices,
-        default=AttendanceStatus.ABSENT,
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=ABSENT
     )
 
     check_in = models.TimeField(
         null=True,
-        blank=True,
+        blank=True
     )
 
     check_out = models.TimeField(
         null=True,
-        blank=True,
+        blank=True
     )
 
     working_hours = models.DurationField(
         null=True,
-        blank=True,
+        blank=True
     )
 
     remarks = models.TextField(
-        blank=True,
+        blank=True
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True,
+        auto_now=True
     )
 
-    class Meta:
-        ordering = (
-            "-attendance_date",
-            "employee",
-        )
-
-        constraints = [
-            models.UniqueConstraint(
-                fields=[
-                    "employee",
-                    "attendance_date",
-                ],
-                name="unique_employee_attendance",
-            )
-        ]
-
-    def __str__(self):
-        return (
-            f"{self.employee.employee_id} - "
-            f"{self.attendance_date} - "
-            f"{self.get_status_display()}"
-        )
-
-    def clean(self):
-        super().clean()
-
-        self._validate_status()
-        self._validate_check_times()
-
-    def save(self, *args, **kwargs):
-
-        self._calculate_status()
-        self._calculate_working_hours()
-
-        self.full_clean()
-
-        super().save(*args, **kwargs)
-
-    def _calculate_status(self):
-
+    def calculate_status(self):
         if not self.check_in:
-            return
+            return self.status
 
-        if self.check_in <= self.LATE_AFTER:
+        late_time = time(9, 45)
+        half_day_time = time(13, 30)
 
-            self.status = (
-                self.AttendanceStatus.PRESENT
-            )
+        if self.check_in >= half_day_time:
+            return self.HALF_DAY
 
-        elif self.check_in <= self.HALF_DAY_AFTER:
+        if self.check_in >= late_time:
+            return self.LATE
 
-            self.status = (
-                self.AttendanceStatus.LATE
-            )
-
-        else:
-
-            self.status = (
-                self.AttendanceStatus.HALF_DAY
-            )
-
-    def _calculate_working_hours(self):
-
+        return self.PRESENT
+    
+    def calculate_working_hours(self):
         if self.check_in and self.check_out:
-
             check_in_datetime = datetime.combine(
                 self.attendance_date,
-                self.check_in,
+                self.check_in
             )
 
             check_out_datetime = datetime.combine(
                 self.attendance_date,
-                self.check_out,
+                self.check_out
             )
 
-            self.working_hours = (
-                check_out_datetime
-                -
-                check_in_datetime
-            )
+            return check_out_datetime - check_in_datetime
 
-        else:
-            self.working_hours = None
+        return None
 
-    def _validate_status(self):
+    def save(self, *args, **kwargs):
 
         if self.check_in:
-            return
+            self.status = self.calculate_status()
 
-        if self.status not in {
-            self.AttendanceStatus.ABSENT,
-            self.AttendanceStatus.LEAVE,
-        }:
-            raise ValidationError(
-                {
-                    "status": (
-                        "Select either Absent or Leave "
-                        "when no check-in time is provided."
-                    )
-                }
-            )
+        self.working_hours = self.calculate_working_hours()
 
-        if self.check_out:
-            raise ValidationError(
-                {
-                    "check_out": (
-                        "Check-out time cannot be provided "
-                        "without a check-in time."
-                    )
-                }
-            )
+        super().save(*args, **kwargs)
 
-    def _validate_check_times(self):
-
-        if self.check_in and self.check_out:
-
-            if self.check_out <= self.check_in:
-
-                raise ValidationError(
-                    {
-                        "check_out": (
-                            "Check-out time must be later "
-                            "than check-in time."
-                        )
-                    }
-                )
+    def __str__(self):
+        return (
+            f"{self.employee} - "
+            f"{self.attendance_date}"
+        )
