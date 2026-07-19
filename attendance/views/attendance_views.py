@@ -1,120 +1,80 @@
-from datetime import date, datetime
+from datetime import datetime, time
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-# from attendance.forms import EmployeeForm
 
-from attendance.models import Attendance, Employee
-
-
-def calculate_working_hours(attendance):
-    if attendance.check_in and attendance.check_out:
-        check_in = datetime.combine(
-            attendance.attendance_date,
-            attendance.check_in,
-        )
-
-        check_out = datetime.combine(
-            attendance.attendance_date,
-            attendance.check_out,
-        )
-
-        duration = check_out - check_in
-
-        total_seconds = int(duration.total_seconds())
-
-        hours = total_seconds // 3600
-        minutes = (total_seconds % 3600) // 60
-
-        return f"{hours}h {minutes}m"
-
-    return "--"
+from ..decorators import admin_required
+from ..models import Attendance, Employee
 
 
 @login_required
 def dashboard(request):
+    # Superuser should never have an Employee record.
     if request.user.is_superuser:
         return redirect("admin_dashboard")
 
-    employee = (
-        Employee.objects
-        .select_related("department", "user")
-        .filter(user=request.user)
-        .first()
+    employee = get_object_or_404(
+        Employee,
+        user=request.user
     )
 
-    today_attendance = None
-    working_hours = "--"
-    attendance_history = []
+    today = timezone.localdate()
 
-    if employee:
-        today_attendance = Attendance.objects.filter(
-            employee=employee,
-            attendance_date=date.today(),
-        ).first()
-
-        if today_attendance:
-            working_hours = calculate_working_hours(
-                today_attendance
-            )
-
-        attendance_history = (
-            Attendance.objects
-            .filter(employee=employee)
-            .order_by("-attendance_date")[:30]
-        )
+    attendance = Attendance.objects.filter(
+        employee=employee,
+        attendance_date=today
+    ).first()
 
     context = {
         "employee": employee,
-        "today_attendance": today_attendance,
-        "working_hours": working_hours,
-        "attendance_history": attendance_history,
+        "attendance": attendance,
     }
 
     return render(
         request,
         "dashboard/home.html",
-        context,
+        context
     )
 
 
 @login_required
 def check_in(request):
-    if request.method != "POST":
-        return redirect("dashboard")
+    if request.user.is_superuser:
+        return redirect("admin_dashboard")
 
     employee = get_object_or_404(
         Employee,
-        user=request.user,
+        user=request.user
     )
 
-    attendance, created = (
-        Attendance.objects.get_or_create(
-            employee=employee,
-            attendance_date=date.today(),
-        )
-    )
+    today = timezone.localdate()
 
-    if attendance.check_in:
+    existing_attendance = Attendance.objects.filter(
+        employee=employee,
+        attendance_date=today
+    ).first()
+
+    if existing_attendance:
         messages.warning(
             request,
-            "You have already checked in today.",
+            "You have already checked in today."
         )
         return redirect("dashboard")
 
-    attendance.check_in = (
-        timezone.localtime()
-        .time()
-        .replace(microsecond=0)
+    attendance = Attendance.objects.create(
+        employee=employee,
+        attendance_date=today,
+        check_in=timezone.localtime().time(),
     )
 
+    attendance.status = attendance.calculate_status()
     attendance.save()
 
     messages.success(
         request,
-        "Check In successful.",
+        "Check-in successful."
     )
 
     return redirect("dashboard")
@@ -122,45 +82,238 @@ def check_in(request):
 
 @login_required
 def check_out(request):
-
-    if request.method != "POST":
-        return redirect("dashboard")
+    if request.user.is_superuser:
+        return redirect("admin_dashboard")
 
     employee = get_object_or_404(
         Employee,
-        user=request.user,
+        user=request.user
     )
+
+    today = timezone.localdate()
 
     attendance = Attendance.objects.filter(
         employee=employee,
-        attendance_date=date.today(),
+        attendance_date=today
     ).first()
 
     if not attendance:
-        messages.warning(
+        messages.error(
             request,
-            "Please check in first.",
+            "Please check-in first."
         )
         return redirect("dashboard")
 
     if attendance.check_out:
         messages.warning(
             request,
-            "You have already checked out today.",
+            "You have already checked out."
         )
         return redirect("dashboard")
 
-    attendance.check_out = (
-        timezone.localtime()
-        .time()
-        .replace(microsecond=0)
-    )
-
+    attendance.check_out = timezone.localtime().time()
+    attendance.working_hours = attendance.calculate_working_hours()
     attendance.save()
 
     messages.success(
         request,
-        "Check Out successful.",
+        "Check-out successful."
     )
 
     return redirect("dashboard")
+
+
+@login_required
+def my_attendance(request):
+
+    if request.user.is_superuser:
+        return redirect("admin_dashboard")
+
+
+    employee = get_object_or_404(
+        Employee,
+        user=request.user
+    )
+
+
+    attendance_records = Attendance.objects.filter(
+        employee=employee
+    ).order_by(
+        "-attendance_date"
+    )
+
+
+    total_days = attendance_records.count()
+
+
+    present_days = attendance_records.filter(
+        status="PRESENT"
+    ).count()
+
+
+    absent_days = attendance_records.filter(
+        status="ABSENT"
+    ).count()
+
+
+
+    context = {
+
+        "employee": employee,
+
+        "attendance_records": attendance_records,
+
+        "total_days": total_days,
+
+        "present_days": present_days,
+
+        "absent_days": absent_days,
+
+    }
+
+
+    return render(
+        request,
+        "attendance/my_attendance.html",
+        context
+    )
+
+
+@login_required
+@admin_required
+def attendance_list(request):
+    attendance_records = Attendance.objects.select_related(
+        "employee",
+        "employee__department"
+    ).order_by(
+        "-attendance_date"
+    )
+
+    context = {
+        "attendance_records": attendance_records
+    }
+
+    return render(
+        request,
+        "attendance/attendance_list.html",
+        context
+    )
+
+
+@login_required
+@admin_required
+def attendance_manage(request):
+    today = timezone.localdate()
+
+    attendance_records = Attendance.objects.filter(
+        attendance_date=today
+    ).select_related(
+        "employee"
+    )
+
+    context = {
+        "attendance_records": attendance_records,
+        "today": today
+    }
+
+    return render(
+        request,
+        "attendance/attendance_manage.html",
+        context
+    )
+
+
+@login_required
+@admin_required
+def mark_attendance(request):
+    employees = Employee.objects.filter(
+        is_active=True
+    )
+
+    today = timezone.localdate()
+
+    if request.method == "POST":
+        employee_id = request.POST.get("employee")
+        status = request.POST.get("status")
+
+        employee = get_object_or_404(
+            Employee,
+            id=employee_id
+        )
+
+        attendance, created = Attendance.objects.get_or_create(
+            employee=employee,
+            attendance_date=today
+        )
+
+        attendance.status = status
+        attendance.save(update_fields=["status"])
+
+        messages.success(
+            request,
+            "Attendance marked successfully."
+        )
+
+        return redirect("attendance_manage")
+
+    context = {
+        "employees": employees
+    }
+
+    return render(
+        request,
+        "attendance/mark_attendance.html",
+        context
+    )
+
+
+@login_required
+@admin_required
+def absent_mark(request):
+    today = timezone.localdate()
+
+    if timezone.localtime().time() < time(18, 0):
+        messages.warning(
+            request,
+            "Employees can be marked absent only after 6:00 PM."
+        )
+        return redirect("attendance_manage")
+
+    employees = Employee.objects.filter(
+        is_active=True
+    )
+
+    for employee in employees:
+        Attendance.objects.get_or_create(
+            employee=employee,
+            attendance_date=today,
+            defaults={
+                "status": "ABSENT"
+            }
+        )
+
+    messages.success(
+        request,
+        "Absent marked for remaining employees."
+    )
+
+    return redirect("attendance_manage")
+
+
+@login_required
+@admin_required
+def attendance_detail(request, id):
+    attendance = get_object_or_404(
+        Attendance,
+        id=id
+    )
+
+    context = {
+        "attendance": attendance
+    }
+
+    return render(
+        request,
+        "attendance/attendance_detail.html",
+        context
+    )
