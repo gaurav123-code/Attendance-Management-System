@@ -30,6 +30,8 @@ def dashboard(request):
     context = {
         "employee": employee,
         "attendance": attendance,
+        "today_attendance": attendance,
+        "today": today,
     }
 
     return render(
@@ -182,6 +184,7 @@ def my_attendance(request):
 @login_required
 @admin_required
 def attendance_list(request):
+
     attendance_records = Attendance.objects.select_related(
         "employee",
         "employee__department"
@@ -189,8 +192,33 @@ def attendance_list(request):
         "-attendance_date"
     )
 
+    employees = Employee.objects.filter(
+        is_active=True
+    )
+
+    employee = request.GET.get("employee")
+    date = request.GET.get("date")
+    status = request.GET.get("status")
+
+    if employee:
+        attendance_records = attendance_records.filter(
+            employee_id=employee
+        )
+
+    if date:
+        attendance_records = attendance_records.filter(
+            attendance_date=date
+        )
+
+    if status:
+        attendance_records = attendance_records.filter(
+            status=status
+        )
+
     context = {
-        "attendance_records": attendance_records
+        "attendance_records": attendance_records,
+        "employees": employees,
+        "status_choices": Attendance.STATUS_CHOICES,
     }
 
     return render(
@@ -199,21 +227,56 @@ def attendance_list(request):
         context
     )
 
-
 @login_required
 @admin_required
 def attendance_manage(request):
+
     today = timezone.localdate()
 
-    attendance_records = Attendance.objects.filter(
-        attendance_date=today
-    ).select_related(
-        "employee"
+    attendances = (
+        Attendance.objects.filter(
+            attendance_date=today
+        )
+        .select_related(
+            "employee",
+            "employee__department",
+        )
+        .order_by("employee__first_name")
     )
 
+    total_employees = Employee.objects.filter(
+        is_active=True
+    ).count()
+
+    present_today = attendances.filter(
+        status=Attendance.PRESENT
+    ).count()
+
+    late_today = attendances.filter(
+        status=Attendance.LATE
+    ).count()
+
+    absent_today = (
+        total_employees
+        - attendances.count()
+    ) + attendances.filter(
+        status=Attendance.ABSENT
+    ).count()
+
     context = {
-        "attendance_records": attendance_records,
-        "today": today
+
+        "today": today,
+
+        "attendances": attendances,
+
+        "total_employees": total_employees,
+
+        "present_today": present_today,
+
+        "late_today": late_today,
+
+        "absent_today": absent_today,
+
     }
 
     return render(
@@ -222,50 +285,93 @@ def attendance_manage(request):
         context
     )
 
-
 @login_required
 @admin_required
 def mark_attendance(request):
+
     employees = Employee.objects.filter(
         is_active=True
     )
 
     today = timezone.localdate()
 
+
     if request.method == "POST":
+
         employee_id = request.POST.get("employee")
-        status = request.POST.get("status")
 
         employee = get_object_or_404(
             Employee,
             id=employee_id
         )
 
+
         attendance, created = Attendance.objects.get_or_create(
             employee=employee,
             attendance_date=today
         )
 
-        attendance.status = status
-        attendance.save(update_fields=["status"])
+
+        attendance.check_in = request.POST.get(
+            "check_in"
+        ) or None
+
+
+        attendance.check_out = request.POST.get(
+            "check_out"
+        ) or None
+
+
+        attendance.status = request.POST.get(
+            "status"
+        )
+
+
+        attendance.remarks = request.POST.get(
+            "remarks"
+        )
+
+
+        if attendance.check_in:
+
+            attendance.status = attendance.calculate_status()
+
+
+        if attendance.check_in and attendance.check_out:
+
+            attendance.working_hours = (
+                attendance.calculate_working_hours()
+            )
+
+
+        attendance.save()
+
 
         messages.success(
             request,
-            "Attendance marked successfully."
+            "Manual attendance marked successfully."
         )
 
-        return redirect("attendance_manage")
+
+        return redirect(
+            "attendance_manage"
+        )
+
 
     context = {
-        "employees": employees
+
+        "employees": employees,
+
+        "status_choices": Attendance.STATUS_CHOICES,
+
     }
+
 
     return render(
         request,
         "attendance/mark_attendance.html",
         context
     )
-
 
 @login_required
 @admin_required
