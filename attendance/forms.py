@@ -1,5 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import (
+    PasswordChangeForm,
+    SetPasswordForm,
+)
 
 from .models import (
     Employee,
@@ -194,7 +197,31 @@ class CustomPasswordChangeForm(
         )
     )
 
+# ==========================
+# Admin Reset Password Form
+# ==========================
 
+class AdminResetPasswordForm(SetPasswordForm):
+
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter New Password",
+            }
+        ),
+    )
+
+    new_password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Confirm New Password",
+            }
+        ),
+    )
 
 # ==========================
 # Attendance Form
