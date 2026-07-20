@@ -184,4 +184,11 @@ urlpatterns = [
         export_views.export_report,
         name="export_report",
     ),
+    
+    path(
+    "employees/<int:id>/reset-password/",
+    employee_views.admin_reset_password,
+    name="admin_reset_password",
+    ),
+    
 ]
