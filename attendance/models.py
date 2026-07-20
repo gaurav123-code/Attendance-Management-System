@@ -100,6 +100,13 @@ class Employee(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
+class AttendanceStatus(models.TextChoices):
+
+    PRESENT = "PRESENT", "Present"
+    LATE = "LATE", "Late"
+    HALF_DAY = "HALF_DAY", "Half Day"
+    ABSENT = "ABSENT", "Absent"
+    
 class Attendance(models.Model):
 
     PRESENT = "PRESENT"
@@ -158,19 +165,40 @@ class Attendance(models.Model):
     )
 
     def calculate_status(self):
+
+        from datetime import datetime, time
+
+
         if not self.check_in:
-            return self.status
+            return AttendanceStatus.ABSENT
+
+
+        # Convert string time into datetime.time
+        if isinstance(self.check_in, str):
+            self.check_in = datetime.strptime(
+                self.check_in,
+                "%H:%M"
+            ).time()
+
+
+        office_start = time(9, 0)
 
         late_time = time(9, 45)
+
         half_day_time = time(13, 30)
 
+
+
         if self.check_in >= half_day_time:
-            return self.HALF_DAY
+            return AttendanceStatus.HALF_DAY
 
-        if self.check_in >= late_time:
-            return self.LATE
 
-        return self.PRESENT
+        elif self.check_in >= late_time:
+            return AttendanceStatus.LATE
+
+
+        else:
+            return AttendanceStatus.PRESENT
     
     def calculate_working_hours(self):
         if self.check_in and self.check_out:
@@ -197,6 +225,26 @@ class Attendance(models.Model):
 
         super().save(*args, **kwargs)
 
+    @property
+    def formatted_working_hours(self):
+        if not self.working_hours:
+            return "00:00:00"
+
+        total_seconds = int(
+            self.working_hours.total_seconds()
+        )
+
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+
+        return (
+            f"{hours:02d}:"
+            f"{minutes:02d}:"
+            f"{seconds:02d}"
+        )
+    
+    
     def __str__(self):
         return (
             f"{self.employee} - "
