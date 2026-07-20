@@ -10,7 +10,10 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from ..decorators import admin_required
-from ..forms import EmployeeForm
+from ..forms import (
+    EmployeeForm,
+    AdminResetPasswordForm,
+)
 from ..models import Attendance, Employee, Department
 
 
@@ -988,5 +991,74 @@ def employee_reactivate(request, id):
     return redirect(
 
         "employee_list"
+
+    )
+
+@admin_required
+def admin_reset_password(request, id):
+
+    employee = get_object_or_404(
+        Employee,
+        id=id
+    )
+
+    if not employee.user:
+
+        messages.error(
+            request,
+            "Employee login account not found."
+        )
+
+        return redirect(
+            "employee_detail",
+            id=employee.id
+        )
+
+    if request.method == "POST":
+
+        form = AdminResetPasswordForm(
+            employee.user,
+            request.POST
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            employee.must_change_password = True
+
+            employee.save()
+
+            messages.success(
+                request,
+                "Password reset successfully."
+            )
+
+            return redirect(
+                "employee_detail",
+                id=employee.id
+            )
+
+    else:
+
+        form = AdminResetPasswordForm(
+            employee.user
+        )
+
+    context = {
+
+        "employee": employee,
+
+        "form": form,
+
+    }
+
+    return render(
+
+        request,
+
+        "employee/admin_reset_password.html",
+
+        context,
 
     )
