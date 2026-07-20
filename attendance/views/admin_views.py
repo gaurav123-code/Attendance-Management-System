@@ -13,6 +13,12 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 
 from ..models import Employee
+from django.db.models import Q
+
+from ..models import (
+    Attendance,
+    Employee,
+)
 
 
 
@@ -24,9 +30,63 @@ from ..models import Employee
 
 def admin_dashboard(request):
 
+    today = timezone.localdate()
+
+    total_employees = Employee.objects.filter(
+        is_active=True
+    ).count()
+
+    present_today = Attendance.objects.filter(
+        attendance_date=today,
+        status__in=[
+            Attendance.PRESENT,
+            Attendance.LATE,
+            Attendance.HALF_DAY,
+        ],
+    ).count()
+
+    late_today = Attendance.objects.filter(
+        attendance_date=today,
+        status=Attendance.LATE,
+    ).count()
+
+    absent_today = max(
+        total_employees - present_today,
+        0,
+    )
+
+    recent_attendance = (
+        Attendance.objects.filter(
+            attendance_date=today
+        )
+        .select_related(
+            "employee",
+            "employee__department",
+        )
+        .order_by(
+            "-updated_at",
+        )[:10]
+    )
+        
+
+    context = {
+
+        "total_employees": total_employees,
+
+        "present_today": present_today,
+
+        "late_today": late_today,
+
+        "absent_today": absent_today,
+
+        "recent_attendance": recent_attendance,
+
+    }
+
     return render(
         request,
-        "admin_dashboard/home.html"
+        "admin_dashboard/home.html",
+        context,
     )
 
 
