@@ -131,33 +131,53 @@ def my_attendance(request):
     if request.user.is_superuser:
         return redirect("admin_dashboard")
 
-
     employee = get_object_or_404(
         Employee,
         user=request.user
     )
 
-
     attendance_records = Attendance.objects.filter(
         employee=employee
-    ).order_by(
+    )
+
+    status = request.GET.get("status")
+
+    if status:
+        attendance_records = attendance_records.filter(
+            status=status
+        )
+
+    attendance_records = attendance_records.order_by(
         "-attendance_date"
     )
 
-
-    total_days = attendance_records.count()
-
-
-    present_days = attendance_records.filter(
-        status="PRESENT"
+    total_days = Attendance.objects.filter(
+        employee=employee
     ).count()
 
-
-    absent_days = attendance_records.filter(
-        status="ABSENT"
+    attendance_days = Attendance.objects.filter(
+        employee=employee,
+        status__in=[
+            Attendance.PRESENT,
+            Attendance.LATE,
+            Attendance.HALF_DAY,
+        ]
     ).count()
 
+    late_days = Attendance.objects.filter(
+        employee=employee,
+        status=Attendance.LATE
+    ).count()
 
+    half_day_days = Attendance.objects.filter(
+        employee=employee,
+        status=Attendance.HALF_DAY
+    ).count()
+
+    absent_days = Attendance.objects.filter(
+        employee=employee,
+        status=Attendance.ABSENT
+    ).count()
 
     context = {
 
@@ -167,19 +187,23 @@ def my_attendance(request):
 
         "total_days": total_days,
 
-        "present_days": present_days,
+        "attendance_days": attendance_days,
+
+        "late_days": late_days,
+
+        "half_day_days": half_day_days,
 
         "absent_days": absent_days,
 
-    }
+        "selected_status": status,
 
+    }
 
     return render(
         request,
         "attendance/my_attendance.html",
         context
     )
-
 
 @login_required
 @admin_required
