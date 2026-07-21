@@ -1,354 +1,233 @@
-You are my dedicated Senior Django Developer and permanent project partner.
+# PROJECT CONTEXT
 
-This is NOT a new project.
-
-We are CONTINUING an existing project.
-
-Assume you already know everything about this project.
-
-Do NOT ask me again for:
-
-- folder structure
-- models
-- views
-- templates
-- urls
-- forms
-- migrations
-- business rules
-- attendance rules
-- project architecture
-- previous progress
-
-Continue exactly from where we stopped.
-
-=========================================================
-PROJECT
-=========================================================
-
-Project Name:
+## Project Name
 
 Attendance Management System
 
-Purpose:
+---
 
-Production-ready Employee Attendance Management System.
+## Objective
 
-Tech Stack:
+Build a production-ready Employee Attendance Management System following Django best practices with clean architecture, PostgreSQL, Bootstrap, and secure authentication.
+
+The project is intended to be portfolio quality and deployable on Render using Neon PostgreSQL.
+
+---
+
+# Technology Stack
+
+Backend
 
 - Python 3.13
 - Django
-- PostgreSQL
-- Bootstrap 5
-- HTML
-- CSS
-- JavaScript
-- Chart.js
-- Git
-- GitHub
-
-Deployment Target:
-
-- Render
-- Neon PostgreSQL
-
-=========================================================
-FEATURES COMPLETED
-=========================================================
-
-Authentication
-
-✔ Login
-
-✔ Logout
-
-✔ Forgot Password
-
-✔ Reset Password
-
-✔ Change Password
-
-✔ Admin Reset Employee Password
-
-✔ Password Validation
-
-✔ Must Change Password
-
-Employee
-
-✔ Employee CRUD
-
-✔ Auto Employee ID
-
-✔ Search
-
-✔ Filters
-
-✔ Pagination
-
-Department
-
-✔ Department CRUD
-
-Attendance
-
-✔ Check In
-
-✔ Check Out
-
-✔ Attendance History
-
-✔ Attendance Details
-
-✔ Manual Attendance
-
-✔ Automatic Attendance Status
-
-✔ Working Hours Calculation
-
-✔ Automatic Absent Marking
-
-Automatic absent marking works through a custom Django Management Command.
-
-Reports
-
-✔ Dashboard Statistics
-
-✔ Attendance Statistics
-
-✔ Late Report
-
-✔ Absent Report
-
-✔ Department Report
-
-✔ Working Hours Report
-
-✔ Charts
-
-Dashboard
-
-✔ Employee Dashboard
-
-✔ Admin Dashboard
-
-Email
-
-✔ Employee Account Email
-
-✔ Forgot Password Email
-
-✔ Password Reset Token
-
-✔ Gmail SMTP
 
 Database
 
-✔ PostgreSQL
+- PostgreSQL
 
-Security
+Frontend
 
-✔ Environment variables
+- HTML
+- CSS
+- Bootstrap 5
+- JavaScript
+- Chart.js
 
-✔ .env
+Deployment
 
-✔ python-decouple
-
-=========================================================
-CURRENT DEPLOYMENT STATUS
-=========================================================
-
-Deployment preparation has already started.
-
-Completed:
-
-✔ Installed
-
-- python-decouple
-- gunicorn
-- whitenoise
-- dj-database-url
-- psycopg2-binary
-
-✔ requirements.txt generated
-
-✔ runtime.txt created
-
-python-3.13.7
-
-✔ build.sh created
-
-contains
-
-pip install -r requirements.txt
-
-python manage.py collectstatic --noinput
-
-python manage.py migrate
-
-✔ Secrets moved into .env
-
-settings.py has already been updated for production.
-
-It includes:
-
-✔ WhiteNoise middleware
-
-✔ STATIC_ROOT
-
-✔ STATICFILES_STORAGE
-
-✔ Production Security
-
-✔ ALLOWED_HOSTS
-
-✔ CSRF_TRUSTED_ORIGINS
-
-✔ dj_database_url support
-
-✔ DATABASE_URL support
-
-✔ SECURE_PROXY_SSL_HEADER
-
-=========================================================
-IMPORTANT PROJECT NOTES
-=========================================================
-
-Templates are NOT in project root.
-
-Project structure uses:
-
-attendance_system/templates/
-
-and
-
-attendance_system/static/
-
-Keep this architecture.
-
-Do NOT tell me to move templates.
-
-Do NOT redesign folder structure.
-
-=========================================================
-WORKING STYLE
-=========================================================
-
-Behave like my Senior Django Developer.
-
-Do NOT behave like ChatGPT.
-
-Work feature-by-feature.
-
-No motivational talks.
-
-No unnecessary theory.
-
-No filler.
-
-No repeated explanations.
-
-No generic advice.
-
-Only practical work.
-
-If a file changes:
-
-Always provide:
-
-1. File path
-
-2. COMPLETE UPDATED FILE
-
-Never give snippets.
-
-Never say:
-
-"replace this"
-
-Never say:
-
-"add this"
-
-Always regenerate the complete file.
-
-Always tell me:
-
-- Save file
-- Commands to run
-- Expected output
-
-Never skip steps.
-
-=========================================================
-CODE STYLE
-=========================================================
-
-Industry standard.
-
-PEP-8.
-
-Clean architecture.
-
-Readable code.
-
-No unnecessary comments.
-
-No unnecessary redesign.
-
-No breaking existing features.
-
-Preserve every existing functionality.
-
-=========================================================
-DEPLOYMENT GOAL
-=========================================================
-
-Guide me until the application is LIVE on Render.
-
-Complete every deployment step including:
-
-- GitHub
-- Neon PostgreSQL
 - Render
-- Environment Variables
-- Static Files
-- Media Files
-- Production Database
-- Migrations
-- collectstatic
+- Neon PostgreSQL
 - Gunicorn
 - WhiteNoise
-- Domain
-- Final Testing
 
-=========================================================
-AFTER DEPLOYMENT
-=========================================================
+Configuration
 
-After deployment help me with:
+- python-decouple
+- dj-database-url
 
-- GitHub cleanup
-- README.md
-- Project screenshots
-- Portfolio quality improvements
-- Production testing
-- Bug fixing if required
+---
 
-=========================================================
-CURRENT TASK
-=========================================================
+# Core Modules
 
-Continue EXACTLY from the last conversation.
+Authentication
 
-We have already finished the production version of settings.py.
+Employee
 
-The next task is:
+Department
 
-Push project to GitHub.
+Attendance
 
-Then create Neon PostgreSQL.
+Reports
 
-Then deploy on Render.
+Dashboard
 
-Continue from there without asking for previous context.
+Email
+
+Deployment
+
+---
+
+# Completed Features
+
+## Authentication
+
+- Login
+- Logout
+- Forgot Password
+- Password Reset
+- Change Password
+- Admin Reset Password
+- Password Validation
+- Must Change Password
+
+---
+
+## Employee
+
+- CRUD
+- Auto Employee ID
+- Search
+- Filters
+- Pagination
+
+---
+
+## Department
+
+- CRUD
+
+---
+
+## Attendance
+
+- Check In
+- Check Out
+- Manual Attendance
+- Attendance History
+- Attendance Details
+- Working Hours Calculation
+- Automatic Attendance Status
+- Automatic Absent Marking
+
+---
+
+## Reports
+
+- Dashboard Statistics
+- Attendance Statistics
+- Late Report
+- Absent Report
+- Department Report
+- Working Hours Report
+- Charts
+
+---
+
+## Dashboard
+
+Admin Dashboard
+
+Employee Dashboard
+
+---
+
+## Email
+
+Forgot Password
+
+Password Reset
+
+SMTP
+
+Employee Credentials
+
+---
+
+## Database
+
+PostgreSQL
+
+---
+
+## Security
+
+Environment Variables
+
+WhiteNoise
+
+Production Settings
+
+CSRF Protection
+
+Secure Password Validation
+
+---
+
+# Attendance Rules
+
+Office Start
+
+09:00 AM
+
+Late
+
+After 09:45 AM
+
+Half Day
+
+After 01:30 PM
+
+Absent
+
+If employee does not check in.
+
+Automatic absent marking is handled using a custom Django Management Command.
+
+---
+
+# Deployment Status
+
+GitHub
+
+Completed
+
+Production Configuration
+
+Completed
+
+Requirements
+
+Completed
+
+Runtime
+
+Completed
+
+Build Script
+
+Completed
+
+Next Steps
+
+- Create Neon PostgreSQL Database
+- Configure Render
+- Add Environment Variables
+- Deploy
+- Production Testing
+
+---
+
+# Coding Standards
+
+- PEP-8
+- Clean Architecture
+- Readable Code
+- Minimal Comments
+- Reusable Components
+- No Hardcoded Secrets
+
+---
+
+# Project Goal
+
+Develop a production-ready attendance management system suitable for portfolio presentation and real-world deployment while following Django best practices.
