@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                Attendance Details
+            </h2>
+
+            <p class="text-muted mb-0">
+                Complete attendance information of employee.
+            </p>
+        </div>
+
+        <a href="{% url 'attendance_list' %}"
+           class="btn btn-outline-primary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back
+        </a>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="bg-primary text-white rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                         style="width:80px;height:80px;">
+
+                        <i class="bi bi-person-fill fs-1"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold mt-3">
+                        {{ attendance.employee.first_name }}
+                        {{ attendance.employee.last_name }}
+                    </h4>
+
+                    <p class="text-muted">
+                        {{ attendance.employee.employee_id }}
+                    </p>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Department:</strong>
+                        {{ attendance.employee.department.name }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Email:</strong>
+                        {{ attendance.employee.email }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-4">
+                        Attendance Information
+                    </h5>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Attendance Date
+                                </small>
+
+                                <h6 class="fw-bold mt-1">
+                                    {{ attendance.attendance_date }}
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Status
+                                </small>
+
+                                <h6 class="mt-1">
+
+                                    {% if attendance.get_status_display == "Present" %}
+                                        <span class="badge bg-success">
+                                            {{ attendance.get_status_display }}
+                                        </span>
+
+                                    {% elif attendance.get_status_display == "Late" %}
+                                        <span class="badge bg-warning text-dark">
+                                            {{ attendance.get_status_display }}
+                                        </span>
+
+                                    {% elif attendance.get_status_display == "Half Day" %}
+                                        <span class="badge bg-info text-dark">
+                                            {{ attendance.get_status_display }}
+                                        </span>
+
+                                    {% elif attendance.get_status_display == "Pending" %}
+                                        <span class="badge bg-secondary">
+                                            {{ attendance.get_status_display }}
+                                        </span>
+
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            {{ attendance.get_status_display }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Check In Time
+                                </small>
+
+                                <h6 class="fw-bold mt-1">
+
+                                    {% if attendance.check_in %}
+                                        {{ attendance.check_in|time:"h:i A" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Check Out Time
+                                </small>
+
+                                <h6 class="fw-bold mt-1">
+
+                                    {% if attendance.check_out %}
+                                        {{ attendance.check_out|time:"h:i A" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Working Hours
+                                </small>
+
+                                <h6 class="fw-bold mt-1">
+
+                                    {% if attendance.working_hours %}
+                                        {{ attendance.working_hours }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <small class="text-muted">
+                                    Created At
+                                </small>
+
+                                <h6 class="fw-bold mt-1">
+                                    {{ attendance.created_at|date:"d M Y, h:i A" }}
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% if attendance.remarks %}
+
+                    <div class="mt-4">
+
+                        <label class="fw-semibold">
+                            Remarks
+                        </label>
+
+                        <div class="alert alert-secondary mt-2">
+                            {{ attendance.remarks }}
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
