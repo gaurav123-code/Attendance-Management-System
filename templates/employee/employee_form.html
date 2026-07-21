@@ -1,191 +1,293 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<div class="container mt-4">
 
-    <title>{{ title }}</title>
 
-    <style>
+    <div class="row justify-content-center">
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
-        }
 
-        body{
-            background:#f5f7fa;
-            padding:30px;
-        }
+        <div class="col-md-8">
 
-        .container{
-            max-width:850px;
-            margin:auto;
-        }
 
-        .card{
-            background:#fff;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 2px 10px rgba(0,0,0,.1);
-        }
+            <div class="card shadow-sm border-0">
 
-        h1{
-            margin-bottom:25px;
-            color:#222;
-        }
 
-        .info-box{
-            background:#e8f4ff;
-            border-left:5px solid #0d6efd;
-            padding:15px;
-            margin-bottom:25px;
-            border-radius:5px;
-        }
+                <div class="card-header bg-white">
 
-        .info-box strong{
-            color:#0d6efd;
-        }
 
-        .form-group{
-            margin-bottom:18px;
-        }
+                    <h4 class="fw-bold mb-0">
 
-        label{
-            display:block;
-            margin-bottom:6px;
-            font-weight:bold;
-        }
 
-        input,
-        select{
-            width:100%;
-            padding:10px;
-            border:1px solid #ccc;
-            border-radius:5px;
-            font-size:15px;
-        }
+                        {% if employee %}
 
-        input:focus,
-        select:focus{
-            outline:none;
-            border-color:#0d6efd;
-        }
+                            Update Employee
 
-        .errorlist{
-            color:red;
-            margin-top:5px;
-            list-style:none;
-            font-size:14px;
-        }
+                        {% else %}
 
-        .buttons{
-            margin-top:25px;
-        }
+                            Add New Employee
 
-        .btn{
-            display:inline-block;
-            padding:10px 18px;
-            border:none;
-            border-radius:6px;
-            text-decoration:none;
-            color:white;
-            cursor:pointer;
-            font-weight:bold;
-        }
+                        {% endif %}
 
-        .btn-primary{
-            background:#0d6efd;
-        }
 
-        .btn-secondary{
-            background:#6c757d;
-            margin-left:10px;
-        }
+                    </h4>
 
-        .required{
-            color:red;
-        }
 
-    </style>
+                </div>
 
-</head>
 
-<body>
 
-<div class="container">
+                <div class="card-body">
 
-    <div class="card">
 
-        <h1>{{ title }}</h1>
+                    <form method="post">
 
-        <div class="info-box">
 
-            <strong>Note:</strong>
+                        {% csrf_token %}
 
-            Employee ID, Username and Password are generated automatically.
 
-            After employee creation, login credentials will be available to the administrator.
+
+                        <div class="row g-3">
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    First Name
+
+                                </label>
+
+
+                                {{ form.first_name }}
+
+
+                                {% if form.first_name.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ form.first_name.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    Last Name
+
+                                </label>
+
+
+                                {{ form.last_name }}
+
+
+                                {% if form.last_name.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ form.last_name.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    Email
+
+                                </label>
+
+
+                                {{ form.email }}
+
+
+                                {% if form.email.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ form.email.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    Phone Number
+
+                                </label>
+
+
+                                {{ form.phone_number }}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    Department
+
+                                </label>
+
+
+                                {{ form.department }}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label fw-semibold">
+
+                                    Date Joined
+
+                                </label>
+
+
+                                {{ form.date_joined }}
+
+
+                            </div>
+
+
+
+
+
+                            <div class="col-md-12">
+
+
+                                <div class="form-check">
+
+
+                                    {{ form.is_active }}
+
+
+                                    <label class="form-check-label">
+
+                                        Active Employee
+
+                                    </label>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <hr class="my-4">
+
+
+
+
+
+                        <div class="d-flex justify-content-between">
+
+
+
+                            <a href="{% url 'employee_list' %}"
+
+                               class="btn btn-secondary">
+
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Back
+
+
+                            </a>
+
+
+
+
+
+                            <button type="submit"
+
+                                    class="btn btn-primary">
+
+
+                                <i class="bi bi-save"></i>
+
+
+                                Save Employee
+
+
+                            </button>
+
+
+                        </div>
+
+
+
+                    </form>
+
+
+                </div>
+
+
+            </div>
+
 
         </div>
 
-        <form method="POST">
-
-            {% csrf_token %}
-
-            {% for field in form %}
-
-            <div class="form-group">
-
-                <label>
-
-                    {{ field.label }}
-
-                    {% if field.field.required %}
-                        <span class="required">*</span>
-                    {% endif %}
-
-                </label>
-
-                {{ field }}
-
-                {{ field.errors }}
-
-            </div>
-
-            {% endfor %}
-
-            <div class="buttons">
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-
-                    Save Employee
-
-                </button>
-
-                <a
-                    href="{% url 'employee_list' %}"
-                    class="btn btn-secondary">
-
-                    Cancel
-
-                </a>
-
-            </div>
-
-        </form>
 
     </div>
 
+
 </div>
 
-</body>
 
-</html>
+{% endblock %}

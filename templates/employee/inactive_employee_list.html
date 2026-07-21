@@ -2,83 +2,102 @@
 
 {% block content %}
 
+
 <div class="container-fluid mt-4">
+
 
 
     <!-- Header -->
 
+
     <div class="d-flex justify-content-between align-items-center mb-4">
 
+
         <div>
+
             <h2 class="fw-bold">
-                Manage Employees
+                Inactive Employees
             </h2>
 
+
             <p class="text-muted mb-0">
-                Create, update and manage active employee records.
+                Manage deactivated employee records.
             </p>
+
+
         </div>
 
 
-        <div>
-
-            <a href="{% url 'employee_create' %}"
-               class="btn btn-primary">
-
-                <i class="bi bi-person-plus-fill"></i>
-                Add Employee
-
-            </a>
 
 
-            <a href="{% url 'inactive_employee_list' %}"
-               class="btn btn-outline-danger ms-2">
+        <a href="{% url 'employee_list' %}"
+           class="btn btn-secondary">
 
-                <i class="bi bi-person-x"></i>
-                Inactive Employees
 
-            </a>
+            <i class="bi bi-arrow-left"></i>
 
-        </div>
+            Back To Active Employees
+
+
+        </a>
+
 
     </div>
 
 
 
 
+
+
+
     <!-- Filters -->
+
 
     <div class="card shadow-sm border-0 mb-4">
 
+
         <div class="card-body">
 
+
             <form method="get">
+
 
                 <div class="row g-3">
 
 
+
                     <!-- Search -->
 
-                    <div class="col-md-4">
+
+                    <div class="col-md-5">
+
 
                         <input
                             type="text"
                             name="search"
                             class="form-control"
-                            placeholder="Search employee..."
+                            placeholder="Search inactive employee..."
                             value="{{ request.GET.search|default:'' }}"
                         >
+
 
                     </div>
 
 
 
+
+
+
+
                     <!-- Department -->
 
-                    <div class="col-md-3">
+
+                    <div class="col-md-4">
+
 
                         <select name="department"
                                 class="form-select">
+
 
 
                             <option value="">
@@ -86,7 +105,11 @@
                             </option>
 
 
+
+
                             {% for department in departments %}
+
+
 
                                 <option value="{{ department.id }}"
                                     {% if request.GET.department == department.id|stringformat:"s" %}
@@ -99,82 +122,57 @@
                                 </option>
 
 
+
                             {% endfor %}
 
 
+
                         </select>
+
+
 
                     </div>
 
 
 
-                    <!-- Status -->
-
-                    <div class="col-md-3">
-
-
-                        <select name="status"
-                                class="form-select">
-
-
-                            <option value="">
-                                Active Employees
-                            </option>
-
-
-                            <option value="active"
-                                {% if request.GET.status == "active" %}
-                                    selected
-                                {% endif %}
-                            >
-
-                                Active
-
-                            </option>
-
-
-
-                            <option value="inactive"
-                                {% if request.GET.status == "inactive" %}
-                                    selected
-                                {% endif %}
-                            >
-
-                                Inactive
-
-                            </option>
-
-
-                        </select>
-
-
-                    </div>
 
 
 
 
                     <!-- Button -->
 
-                    <div class="col-md-2">
+
+                    <div class="col-md-3">
+
 
                         <button class="btn btn-primary w-100">
 
+
                             <i class="bi bi-search"></i>
-                            Filter
+
+                            Search
+
 
                         </button>
+
 
                     </div>
 
 
+
                 </div>
+
 
             </form>
 
 
         </div>
 
+
     </div>
+
+
+
 
 
 
@@ -184,7 +182,9 @@
     <!-- Employee Table -->
 
 
+
     <div class="card shadow-sm border-0">
+
 
         <div class="card-body">
 
@@ -195,90 +195,125 @@
                 <table class="table table-hover align-middle">
 
 
+
                     <thead class="table-light">
+
 
                         <tr>
 
-                            <th>Employee ID</th>
 
-                            <th>Name</th>
+                            <th>
+                                Employee ID
+                            </th>
 
-                            <th>Email</th>
 
-                            <th>Department</th>
+                            <th>
+                                Name
+                            </th>
 
-                            <th>Username</th>
 
-                            <th>Status</th>
+                            <th>
+                                Email
+                            </th>
 
-                            <th>Actions</th>
+
+                            <th>
+                                Department
+                            </th>
+
+
+                            <th>
+                                Username
+                            </th>
+
+
+                            <th>
+                                Action
+                            </th>
+
 
                         </tr>
 
+
                     </thead>
+
+
+
+
 
 
 
                     <tbody>
 
 
+
                     {% for employee in employees %}
+
 
 
                         <tr>
 
 
+
+
                             <td class="fw-bold">
+
                                 {{ employee.employee_id }}
+
                             </td>
 
 
+
+
+
+
                             <td>
+
                                 {{ employee.first_name }}
                                 {{ employee.last_name }}
+
                             </td>
 
 
+
+
+
+
                             <td>
+
                                 {{ employee.email }}
+
                             </td>
 
 
+
+
+
+
                             <td>
+
                                 {{ employee.department.name }}
+
                             </td>
 
 
+
+
+
+
                             <td>
+
 
                                 {% if employee.user %}
+
                                     {{ employee.user.username }}
+
                                 {% else %}
+
                                     -
-                                {% endif %}
-
-                            </td>
-
-
-
-                            <td>
-
-
-                                {% if employee.is_active %}
-
-                                    <span class="badge bg-success">
-                                        Active
-                                    </span>
-
-
-                                {% else %}
-
-                                    <span class="badge bg-danger">
-                                        Inactive
-                                    </span>
-
 
                                 {% endif %}
+
 
 
                             </td>
@@ -286,67 +321,89 @@
 
 
 
+
+
+
                             <td>
+
 
 
                                 <div class="btn-group">
 
 
+
+
+
+                                    <!-- View -->
+
+
                                     <a href="{% url 'employee_detail' employee.id %}"
                                        class="btn btn-sm btn-outline-primary">
 
+
                                         <i class="bi bi-eye"></i>
 
-                                    </a>
-
-
-
-                                    <a href="{% url 'employee_update' employee.id %}"
-                                       class="btn btn-sm btn-outline-warning">
-
-                                        <i class="bi bi-pencil"></i>
 
                                     </a>
 
 
 
 
-                                    {% if employee.is_active %}
 
-                                    <a href="{% url 'employee_delete' employee.id %}"
-                                       class="btn btn-sm btn-outline-danger">
 
-                                        <i class="bi bi-trash"></i>
+
+                                    <!-- Reactivate -->
+
+
+                                    <a href="{% url 'employee_reactivate' employee.id %}"
+                                       class="btn btn-sm btn-outline-success">
+
+
+                                        <i class="bi bi-arrow-clockwise"></i>
+
 
                                     </a>
 
-                                    {% endif %}
+
 
 
 
                                 </div>
 
 
+
                             </td>
 
 
+
+
+
                         </tr>
+
+
 
 
 
                     {% empty %}
 
 
+
+
                         <tr>
 
-                            <td colspan="7"
+
+                            <td colspan="6"
                                 class="text-center text-muted py-4">
 
-                                No active employees found.
+
+                                No inactive employees found.
+
 
                             </td>
 
+
                         </tr>
+
 
 
 
@@ -354,16 +411,22 @@
 
 
 
+
+
                     </tbody>
+
 
 
                 </table>
 
 
+
             </div>
 
 
+
         </div>
+
 
 
     </div>
@@ -372,59 +435,91 @@
 
 
 
+
+
+
+
     <!-- Pagination -->
+
 
 
     {% if employees.has_other_pages %}
 
 
+
     <nav class="mt-4">
+
 
         <ul class="pagination justify-content-center">
 
 
+
+
+
             {% if employees.has_previous %}
+
 
             <li class="page-item">
 
+
                 <a class="page-link"
-                   href="?page={{ employees.previous_page_number }}&search={{ request.GET.search }}&department={{ request.GET.department }}&status={{ request.GET.status }}">
+                   href="?page={{ employees.previous_page_number }}&search={{ request.GET.search }}&department={{ request.GET.department }}">
+
 
                     Previous
 
+
                 </a>
+
 
             </li>
 
 
             {% endif %}
+
+
+
+
 
 
 
 
             <li class="page-item active">
 
+
                 <span class="page-link">
+
 
                     {{ employees.number }}
 
+
                 </span>
+
 
             </li>
 
 
 
 
+
+
+
+
             {% if employees.has_next %}
+
 
             <li class="page-item">
 
+
                 <a class="page-link"
-                   href="?page={{ employees.next_page_number }}&search={{ request.GET.search }}&department={{ request.GET.department }}&status={{ request.GET.status }}">
+                   href="?page={{ employees.next_page_number }}&search={{ request.GET.search }}&department={{ request.GET.department }}">
+
 
                     Next
 
+
                 </a>
+
 
             </li>
 
@@ -433,17 +528,24 @@
 
 
 
+
+
         </ul>
 
 
+
     </nav>
+
 
 
     {% endif %}
 
 
 
+
+
 </div>
+
 
 
 {% endblock %}

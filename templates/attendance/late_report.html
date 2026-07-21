@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}
+Late Attendance Report
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                Late Attendance Report
+            </h2>
+
+            <p class="text-muted mb-0">
+                Employees who checked in after the allowed reporting time.
+            </p>
+        </div>
+
+
+        <div>
+            <a href="{% url 'report_dashboard' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i>
+                Back to Reports
+            </a>
+        </div>
+
+    </div>
+
+
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3 align-items-end">
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Select Date
+                        </label>
+
+                        <input type="date"
+                               name="date"
+                               class="form-control"
+                               value="{{ selected_date|default:'' }}">
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+                            Generate Report
+
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Summary Card -->
+
+    <div class="row mb-4">
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="bg-light rounded-circle p-3 me-3">
+
+                            <i class="bi bi-clock-history fs-3 text-danger"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h6 class="text-muted mb-1">
+                                Total Late Employees
+                            </h6>
+
+                            <h3 class="fw-bold mb-0">
+                                {{ late_count|default:0 }}
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Report Table -->
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-hover align-middle">
+
+
+                    <thead class="table-light">
+
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+
+                            <th>
+                                Employee ID
+                            </th>
+
+
+                            <th>
+                                Employee Name
+                            </th>
+
+
+                            <th>
+                                Department
+                            </th>
+
+
+                            <th>
+                                Attendance Date
+                            </th>
+
+
+                            <th>
+                                Check In Time
+                            </th>
+
+
+                            <th>
+                                Status
+                            </th>
+
+
+                            <th>
+                                Action
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                    {% for attendance in late_attendance %}
+
+
+                        <tr>
+
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <td>
+                                {{ attendance.employee.employee_id }}
+                            </td>
+
+
+                            <td>
+
+                                {{ attendance.employee.first_name }}
+                                {{ attendance.employee.last_name }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ attendance.employee.department.name }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ attendance.attendance_date }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ attendance.check_in|time:"h:i A" }}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge bg-danger">
+
+                                    {{ attendance.status }}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <a href="{% url 'attendance_detail' attendance.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    <i class="bi bi-eye"></i>
+
+                                    View
+
+                                </a>
+
+                            </td>
+
+
+                        </tr>
+
+
+
+                    {% empty %}
+
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center text-muted py-4">
+
+
+                                <i class="bi bi-info-circle fs-4"></i>
+
+                                <br>
+
+                                No late attendance records found.
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+{% endblock %}

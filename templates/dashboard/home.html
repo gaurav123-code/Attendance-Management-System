@@ -1,425 +1,474 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Dashboard</title>
+{% block content %}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+<div class="container-fluid mt-4">
 
-        body {
-            background: #f4f6f9;
-        }
 
-        header {
-            background: #0d6efd;
-            color: white;
-            padding: 18px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    <!-- Header -->
 
-        header h2 {
-            font-size: 26px;
-        }
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        .logout-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        <div>
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 35px auto;
-        }
+            <h2 class="fw-bold">
+                Employee Dashboard
+            </h2>
 
-        .message {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 6px;
-            font-weight: bold;
-            background: #d1e7dd;
-            color: #0f5132;
-        }
+            <p class="text-muted mb-0">
+                Welcome, {{ employee.first_name }} {{ employee.last_name }}
+            </p>
 
-        .welcome {
-            margin-bottom: 25px;
-        }
+        </div>
 
-        .welcome h1 {
-            color: #333;
-            margin-bottom: 8px;
-        }
 
-        .welcome p {
-            color: #666;
-        }
+        <div>
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-        }
+            {% if not today_attendance %}
 
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, .08);
-        }
+                <a href="{% url 'check_in' %}"
+                   class="btn btn-success">
 
-        .card h3 {
-            margin-bottom: 20px;
-            color: #0d6efd;
-        }
+                    <i class="bi bi-box-arrow-in-right"></i>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+                    Check In
 
-        td {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
+                </a>
 
-        td:first-child {
-            width: 40%;
-            font-weight: bold;
-        }
 
-        .status {
-            color: #dc3545;
-            font-weight: bold;
-        }
+            {% elif not today_attendance.check_out %}
 
-        .actions {
-            margin-top: 25px;
-            display: flex;
-            gap: 15px;
-        }
 
-        .actions form {
-            margin: 0;
-        }
+                <a href="{% url 'check_out' %}"
+                   class="btn btn-danger">
 
-        .btn {
-            border: none;
-            padding: 12px 22px;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-        }
+                    <i class="bi bi-box-arrow-right"></i>
 
-        .checkin {
-            background: #198754;
-        }
+                    Check Out
 
-        .checkout {
-            background: #dc3545;
-        }
+                </a>
 
-        .disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
-
-        .history-card {
-            margin-top: 30px;
-        }
-
-        .history-table th,
-        .history-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .history-table th {
-            background: #0d6efd;
-            color: white;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-    </style>
-</head>
-
-<body>
-
-<header>
-
-    <h2>Attendance Management System</h2>
-
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="logout-btn">
-            Logout
-        </button>
-    </form>
-
-</header>
-
-<div class="container">
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="message">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="welcome">
-
-        {% if employee %}
-            <h1>Welcome, {{ employee.first_name }} {{ employee.last_name }}</h1>
-        {% else %}
-            <h1>Welcome, {{ request.user.username }}</h1>
-        {% endif %}
-
-        <p>Employee Dashboard</p>
-
-    </div>
-
-    <div class="grid">
-
-        <div class="card">
-
-            <h3>Employee Information</h3>
-
-            {% if employee %}
-
-            <table>
-
-                <tr>
-                    <td>Employee ID</td>
-                    <td>{{ employee.employee_id }}</td>
-                </tr>
-
-                <tr>
-                    <td>Department</td>
-                    <td>{{ employee.department.name }}</td>
-                </tr>
-
-                <tr>
-                    <td>Email</td>
-                    <td>{{ employee.email }}</td>
-                </tr>
-
-                <tr>
-                    <td>Phone</td>
-                    <td>{{ employee.phone_number }}</td>
-                </tr>
-
-                <tr>
-                    <td>Status</td>
-                    <td>
-                        {% if employee.is_active %}
-                            Active
-                        {% else %}
-                            Inactive
-                        {% endif %}
-                    </td>
-                </tr>
-
-            </table>
-
-            {% else %}
-
-                <p>No employee profile is linked with this account.</p>
 
             {% endif %}
 
         </div>
 
-        <div class="card">
 
-            <h3>Today's Attendance</h3>
+    </div>
 
-            <table>
 
-                <tr>
-                    <td>Status</td>
-                    <td class="status">
-                        {% if today_attendance %}
-                            {{ today_attendance.get_status_display }}
-                        {% else %}
-                            Not Checked In
-                        {% endif %}
-                    </td>
-                </tr>
 
-                <tr>
-                    <td>Check In</td>
-                    <td>
-                        {% if today_attendance and today_attendance.check_in %}
-                            {{ today_attendance.check_in }}
-                        {% else %}
-                            --:--
-                        {% endif %}
-                    </td>
-                </tr>
 
-                <tr>
-                    <td>Check Out</td>
-                    <td>
-                        {% if today_attendance and today_attendance.check_out %}
-                            {{ today_attendance.check_out }}
-                        {% else %}
-                            --:--
-                        {% endif %}
-                    </td>
-                </tr>
 
-                <tr>
-                    <td>Working Hours</td>
-                    <td>{{ working_hours }}</td>
-                </tr>
+    <!-- Employee Info -->
 
-            </table>
+    <div class="row g-4">
 
-            <div class="actions">
 
-                {% if today_attendance and today_attendance.check_in %}
+        <div class="col-md-4">
 
-                    <button class="btn checkin disabled" disabled>
-                        Checked In
-                    </button>
 
-                {% else %}
+            <div class="card shadow-sm border-0 h-100">
 
-                    <form method="post" action="{% url 'check_in' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn checkin">
-                            Check In
-                        </button>
-                    </form>
 
-                {% endif %}
+                <div class="card-body">
 
-                {% if today_attendance and today_attendance.check_in and not today_attendance.check_out %}
 
-                    <form method="post" action="{% url 'check_out' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn checkout">
-                            Check Out
-                        </button>
-                    </form>
+                    <div class="text-center">
 
-                {% elif today_attendance and today_attendance.check_out %}
 
-                    <button class="btn checkout disabled" disabled>
-                        Checked Out
-                    </button>
+                        <div class="mb-3">
 
-                {% else %}
+                            <i class="bi bi-person-circle display-3 text-primary"></i>
 
-                    <button class="btn checkout disabled" disabled>
-                        Check Out
-                    </button>
+                        </div>
 
-                {% endif %}
+
+                        <h4 class="fw-bold">
+
+                            {{ employee.first_name }}
+                            {{ employee.last_name }}
+
+                        </h4>
+
+
+                        <p class="text-muted">
+
+                            {{ employee.employee_id }}
+
+                        </p>
+
+
+                        <hr>
+
+
+                        <p>
+
+                            <strong>Email:</strong>
+
+                            {{ employee.email }}
+
+                        </p>
+
+
+                        <p>
+
+                            <strong>Department:</strong>
+
+                            {{ employee.department.name }}
+
+                        </p>
+
+
+                        <p>
+
+                            <strong>Date Joined:</strong>
+
+                            {{ employee.date_joined }}
+
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
 
             </div>
 
-        </div>
-
-    </div>
-
-    <!-- Attendance History -->
-
-    <div class="card history-card">
-
-        <h3>Attendance History (Last 30 Records)</h3>
-
-        <div class="table-responsive">
-
-            <table class="history-table">
-
-                <thead>
-
-                    <tr>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Working Hours</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for attendance in attendance_history %}
-
-                    <tr>
-
-                        <td>{{ attendance.attendance_date }}</td>
-
-                        <td>{{ attendance.get_status_display }}</td>
-
-                        <td>
-                            {% if attendance.check_in %}
-                                {{ attendance.check_in|time:"H:i:s" }}
-                            {% else %}
-                                --
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if attendance.check_out %}
-                                {{ attendance.check_out|time:"H:i:s" }}
-                            {% else %}
-                                --
-                            {% endif %}
-                        </td>
-
-                        <td>{{ attendance.working_hours }}</td>
-
-                    </tr>
-
-                    {% empty %}
-
-                    <tr>
-                        <td colspan="5">
-                            No attendance records found.
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
 
         </div>
 
+
+
+
+
+        <!-- Today's Attendance -->
+
+
+        <div class="col-md-8">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-header bg-white">
+
+
+                    <h5 class="fw-bold mb-0">
+
+                        Today's Attendance
+
+                    </h5>
+
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+                    {% if today_attendance %}
+
+
+                    <div class="row text-center g-4">
+
+
+                        <div class="col-md-4">
+
+
+                            <div class="p-3 rounded bg-light">
+
+
+                                <h6 class="text-muted">
+
+                                    Status
+
+                                </h6>
+
+
+                                {% if today_attendance.status == "PRESENT" %}
+
+
+                                    <span class="badge bg-success fs-6">
+
+                                        Present
+
+                                    </span>
+
+
+                                {% elif today_attendance.status == "LATE" %}
+
+
+                                    <span class="badge bg-warning text-dark fs-6">
+
+                                        Late
+
+                                    </span>
+
+
+                                {% elif today_attendance.status == "HALF_DAY" %}
+
+
+                                    <span class="badge bg-info fs-6">
+
+                                        Half Day
+
+                                    </span>
+
+
+                                {% else %}
+
+
+                                    <span class="badge bg-danger fs-6">
+
+                                        Absent
+
+                                    </span>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-4">
+
+
+                            <div class="p-3 rounded bg-light">
+
+
+                                <h6 class="text-muted">
+
+                                    Check In
+
+                                </h6>
+
+
+                                <h5 class="fw-bold">
+
+                                    {{ today_attendance.check_in|default:"-" }}
+
+                                </h5>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-4">
+
+
+                            <div class="p-3 rounded bg-light">
+
+
+                                <h6 class="text-muted">
+
+                                    Check Out
+
+                                </h6>
+
+
+                                <h5 class="fw-bold">
+
+                                    {{ today_attendance.check_out|default:"-" }}
+
+                                </h5>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+                    <hr>
+
+
+                    <div class="text-center">
+
+
+                        <h6 class="text-muted">
+
+                            Working Hours
+
+                        </h6>
+
+
+                        <h3 class="fw-bold text-primary">
+
+                            {{ today_attendance.formatted_working_hours }}
+
+                        </h3>
+
+
+                    </div>
+
+
+
+                    {% else %}
+
+
+                    <div class="text-center py-5">
+
+
+                        <i class="bi bi-calendar-x display-3 text-muted"></i>
+
+
+                        <h5 class="mt-3">
+
+                            No attendance marked today
+
+                        </h5>
+
+
+                        <p class="text-muted">
+
+                            Please check-in to mark your attendance.
+
+                        </p>
+
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
     </div>
+
+
+
+
+
+    <!-- Quick Links -->
+
+
+    <div class="row mt-5 g-4">
+
+
+        <div class="col-md-6">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body text-center">
+
+
+                    <i class="bi bi-calendar-check display-5 text-success"></i>
+
+
+                    <h5 class="fw-bold mt-3">
+
+                        My Attendance History
+
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View your complete attendance records.
+
+                    </p>
+
+
+                    <a href="{% url 'my_attendance' %}"
+                       class="btn btn-outline-success">
+
+                        View Attendance
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-6">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body text-center">
+
+
+                    <i class="bi bi-key display-5 text-primary"></i>
+
+
+                    <h5 class="fw-bold mt-3">
+
+                        Change Password
+
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        Update your account password.
+
+                    </p>
+
+
+                    <a href="{% url 'change_password' %}"
+                       class="btn btn-outline-primary">
+
+                        Change Password
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
 
 </div>
 
-</body>
 
-</html>
+{% endblock %}

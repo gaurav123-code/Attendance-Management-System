@@ -1,228 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
+<div class="container mt-5">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
 
-    <title>Reactivate Employee</title>
+    <div class="row justify-content-center">
 
 
-    <style>
+        <div class="col-md-6">
 
-        *{
 
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
+            <div class="card shadow-sm border-0">
 
-        }
 
+                <div class="card-body text-center p-5">
 
-        body{
 
-            background:#f5f7fa;
-            padding:40px;
+                    <i class="bi bi-exclamation-triangle-fill text-danger display-3"></i>
 
-        }
 
 
-        .container{
+                    <h3 class="fw-bold mt-4">
 
-            max-width:650px;
-            margin:auto;
+                        Deactivate Employee?
 
-        }
+                    </h3>
 
 
-        .card{
 
-            background:#fff;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 2px 10px rgba(0,0,0,.1);
+                    <p class="text-muted mt-3">
 
-        }
 
+                        Are you sure you want to deactivate
 
-        h1{
 
-            color:#198754;
-            margin-bottom:20px;
+                        <strong>
 
-        }
+                            {{ employee.first_name }}
 
+                            {{ employee.last_name }}
 
-        p{
+                        </strong>
 
-            margin-bottom:12px;
-            line-height:1.6;
-            font-size:16px;
 
-        }
+                        ?
 
 
-        .employee-box{
+                        <br>
 
-            background:#f8f9fa;
-            border-left:5px solid #198754;
-            padding:15px;
-            margin:25px 0;
-            border-radius:5px;
 
-        }
+                        Employee data will be preserved and can be restored later.
 
 
-        .employee-box strong{
+                    </p>
 
-            display:inline-block;
-            width:130px;
 
-        }
 
 
-        .btn{
 
-            display:inline-block;
-            padding:10px 18px;
-            border:none;
-            border-radius:6px;
-            text-decoration:none;
-            cursor:pointer;
-            font-weight:bold;
-            color:white;
+                    <form method="post">
 
-        }
 
+                        {% csrf_token %}
 
-        .btn-success{
 
-            background:#198754;
 
-        }
+                        <div class="d-flex justify-content-center gap-3 mt-4">
 
 
-        .btn-secondary{
+                            <a href="{% url 'employee_list' %}"
 
-            background:#6c757d;
-            margin-left:10px;
+                               class="btn btn-secondary">
 
-        }
 
+                                <i class="bi bi-arrow-left"></i>
 
-    </style>
+                                Cancel
 
 
-</head>
+                            </a>
 
 
-<body>
 
 
-<div class="container">
 
+                            <button type="submit"
 
-    <div class="card">
+                                    class="btn btn-danger">
 
 
-        <h1>
-            Reactivate Employee
-        </h1>
+                                <i class="bi bi-trash"></i>
 
+                                Deactivate
 
-        <p>
 
-            Are you sure you want to reactivate this employee?
+                            </button>
 
-        </p>
 
+                        </div>
 
-        <p>
 
-            The employee will regain access to the system.
+                    </form>
 
-        </p>
 
 
+                </div>
 
-        <div class="employee-box">
 
-
-            <p>
-
-                <strong>Employee ID :</strong>
-
-                {{ employee.employee_id }}
-
-            </p>
-
-
-
-            <p>
-
-                <strong>Name :</strong>
-
-                {{ employee.first_name }}
-                {{ employee.last_name }}
-
-            </p>
-
-
-
-            <p>
-
-                <strong>Email :</strong>
-
-                {{ employee.email }}
-
-            </p>
-
-
-
-            <p>
-
-                <strong>Department :</strong>
-
-                {{ employee.department.name }}
-
-            </p>
+            </div>
 
 
         </div>
-
-
-
-        <form method="POST">
-
-
-            {% csrf_token %}
-
-
-
-            <button
-                type="submit"
-                class="btn btn-success">
-
-                Reactivate Employee
-
-            </button>
-
-
-
-            <a
-                href="{% url 'employee_list' %}"
-                class="btn btn-secondary">
-
-                Cancel
-
-            </a>
-
-
-        </form>
 
 
     </div>
@@ -231,7 +120,4 @@
 </div>
 
 
-</body>
-
-
-</html>
+{% endblock %}

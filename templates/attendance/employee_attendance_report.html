@@ -1,0 +1,739 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+        <div>
+
+
+            <h2 class="fw-bold">
+
+                Employee Attendance Report
+
+            </h2>
+
+
+            <p class="text-muted mb-0">
+
+                Detailed attendance report of an employee.
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <a href="{% url 'attendance_report' %}"
+
+           class="btn btn-outline-primary rounded-pill px-4">
+
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Back to Reports
+
+
+        </a>
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+
+        <div class="card-body p-4">
+
+
+
+            <form method="GET">
+
+
+                <div class="row g-3 align-items-end">
+
+
+
+                    <div class="col-md-5">
+
+
+                        <label class="form-label fw-semibold">
+
+                            Select Employee
+
+                        </label>
+
+
+
+                        <select name="employee"
+
+                                class="form-select"
+
+                                required>
+
+
+
+                            <option value="">
+
+                                Choose Employee
+
+                            </option>
+
+
+
+
+
+                            {% for employee in employees %}
+
+
+
+                            <option value="{{ employee.id }}"
+
+                            {% if request.GET.employee == employee.id|stringformat:"s" %}
+
+                            selected
+
+                            {% endif %}
+
+                            >
+
+
+                                {{ employee.first_name }}
+
+                                {{ employee.last_name }}
+
+                                -
+
+                                {{ employee.employee_id }}
+
+
+
+                            </option>
+
+
+
+                            {% endfor %}
+
+
+
+
+                        </select>
+
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="col-md-3">
+
+
+                        <label class="form-label fw-semibold">
+
+                            Month
+
+                        </label>
+
+
+
+                        <input
+
+                            type="month"
+
+                            name="month"
+
+                            class="form-control"
+
+                            value="{{ request.GET.month }}"
+
+                        >
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="col-md-4">
+
+
+                        <button
+
+                            type="submit"
+
+                            class="btn btn-primary rounded-pill w-100">
+
+
+                            <i class="bi bi-search me-2"></i>
+
+                            Generate Report
+
+
+
+                        </button>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    {% if employee %}
+
+
+
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
+
+        <div class="card-body p-4">
+
+
+            <div class="row align-items-center">
+
+
+
+                <div class="col-md-8">
+
+
+                    <h4 class="fw-bold">
+
+
+                        {{ employee.first_name }}
+
+                        {{ employee.last_name }}
+
+
+
+                    </h4>
+
+
+
+                    <p class="text-muted mb-1">
+
+
+                        Employee ID:
+
+                        {{ employee.employee_id }}
+
+
+                    </p>
+
+
+
+                    <p class="text-muted mb-0">
+
+
+                        Department:
+
+                        {{ employee.department.name }}
+
+
+                    </p>
+
+
+
+                </div>
+
+
+
+
+
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+
+
+                        Monthly Report
+
+
+                    </span>
+
+
+                </div>
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <div class="row g-4 mb-4">
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <p class="text-muted mb-1">
+
+                        Total Days
+
+                    </p>
+
+
+                    <h3 class="fw-bold">
+
+                        {{ total_days|default:0 }}
+
+                    </h3>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <p class="text-muted mb-1">
+
+                        Present
+
+                    </p>
+
+
+                    <h3 class="fw-bold text-success">
+
+                        {{ present_days|default:0 }}
+
+                    </h3>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <p class="text-muted mb-1">
+
+                        Late
+
+                    </p>
+
+
+                    <h3 class="fw-bold text-warning">
+
+                        {{ late_days|default:0 }}
+
+                    </h3>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <p class="text-muted mb-1">
+
+                        Absent
+
+                    </p>
+
+
+                    <h3 class="fw-bold text-danger">
+
+                        {{ absent_days|default:0 }}
+
+                    </h3>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+
+        <div class="card-body p-0">
+
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-hover align-middle mb-0">
+
+
+
+                    <thead class="table-light">
+
+
+                        <tr>
+
+
+                            <th>
+
+                                Date
+
+                            </th>
+
+
+                            <th>
+
+                                Check In
+
+                            </th>
+
+
+                            <th>
+
+                                Check Out
+
+                            </th>
+
+
+                            <th>
+
+                                Hours
+
+                            </th>
+
+
+                            <th>
+
+                                Status
+
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+
+
+
+                    <tbody>
+
+
+
+                    {% for attendance in attendances %}
+
+
+
+                        <tr>
+
+
+
+                            <td>
+
+                                {{ attendance.attendance_date }}
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+
+                                {% if attendance.check_in %}
+
+
+                                    {{ attendance.check_in|time:"h:i A" }}
+
+
+                                {% else %}
+
+
+                                    -
+
+
+                                {% endif %}
+
+
+
+                            </td>
+
+
+
+
+
+
+
+                            <td>
+
+
+                                {% if attendance.check_out %}
+
+
+                                    {{ attendance.check_out|time:"h:i A" }}
+
+
+                                {% else %}
+
+
+                                    -
+
+
+                                {% endif %}
+
+
+
+                            </td>
+
+
+
+
+
+
+
+                            <td>
+
+
+                                {{ attendance.working_hours|default:"-" }}
+
+
+                            </td>
+
+
+
+
+
+
+
+                            <td>
+
+
+
+                                {% if attendance.status == "PRESENT" %}
+
+
+                                    <span class="badge bg-success">
+
+                                        Present
+
+                                    </span>
+
+
+
+                                {% elif attendance.status == "LATE" %}
+
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Late
+
+                                    </span>
+
+
+
+                                {% elif attendance.status == "HALF_DAY" %}
+
+
+                                    <span class="badge bg-info">
+
+                                        Half Day
+
+                                    </span>
+
+
+
+                                {% else %}
+
+
+                                    <span class="badge bg-danger">
+
+                                        Absent
+
+                                    </span>
+
+
+
+                                {% endif %}
+
+
+
+                            </td>
+
+
+
+                        </tr>
+
+
+
+                    {% empty %}
+
+
+
+                        <tr>
+
+
+                            <td colspan="5"
+
+                                class="text-center py-4 text-muted">
+
+
+                                No attendance data found.
+
+
+                            </td>
+
+
+                        </tr>
+
+
+
+                    {% endfor %}
+
+
+
+                    </tbody>
+
+
+
+                </table>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    {% endif %}
+
+
+
+</div>
+
+
+{% endblock %}

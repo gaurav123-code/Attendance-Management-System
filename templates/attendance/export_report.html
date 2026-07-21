@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+        <div>
+
+
+            <h2 class="fw-bold">
+
+                Export Attendance Report
+
+            </h2>
+
+
+            <p class="text-muted mb-0">
+
+                Download attendance data in CSV format.
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <a href="{% url 'attendance_report' %}"
+
+           class="btn btn-outline-primary rounded-pill px-4">
+
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Back to Report
+
+
+        </a>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <div class="row justify-content-center">
+
+
+        <div class="col-lg-6">
+
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body p-5 text-center">
+
+
+
+                    <div class="bg-success text-white rounded-circle mx-auto d-flex align-items-center justify-content-center"
+
+                         style="width:90px;height:90px;">
+
+
+                        <i class="bi bi-file-earmark-spreadsheet fs-1"></i>
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <h3 class="fw-bold mt-4">
+
+                        Export Attendance Data
+
+                    </h3>
+
+
+
+
+
+
+
+                    <p class="text-muted">
+
+                        Select date range and download employee attendance records.
+
+                    </p>
+
+
+
+
+
+
+
+
+                    {% if messages %}
+
+
+
+                        {% for message in messages %}
+
+
+
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+
+
+                                {{ message }}
+
+
+
+                                <button
+
+                                    type="button"
+
+                                    class="btn-close"
+
+                                    data-bs-dismiss="alert">
+
+                                </button>
+
+
+
+                            </div>
+
+
+
+                        {% endfor %}
+
+
+
+                    {% endif %}
+
+
+
+
+
+
+
+
+
+                    <form method="GET"
+
+                          action="{% url 'export_report' %}">
+
+
+
+
+
+                        <div class="mb-3 text-start">
+
+
+                            <label class="form-label fw-semibold">
+
+                                Start Date
+
+                            </label>
+
+
+
+                            <input
+
+                                type="date"
+
+                                name="start_date"
+
+                                class="form-control"
+
+                                value="{{ request.GET.start_date }}"
+
+                            >
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+                        <div class="mb-4 text-start">
+
+
+                            <label class="form-label fw-semibold">
+
+                                End Date
+
+                            </label>
+
+
+
+                            <input
+
+                                type="date"
+
+                                name="end_date"
+
+                                class="form-control"
+
+                                value="{{ request.GET.end_date }}"
+
+                            >
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+                        <button
+
+                            type="submit"
+
+                            class="btn btn-success w-100 rounded-pill py-3">
+
+
+                            <i class="bi bi-download me-2"></i>
+
+
+                            Download CSV Report
+
+
+
+                        </button>
+
+
+
+
+
+                    </form>
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+</div>
+
+
+{% endblock %}

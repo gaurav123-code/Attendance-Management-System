@@ -1,0 +1,989 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Reports Dashboard
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="container-fluid mt-4">
+
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Attendance Reports Dashboard
+            </h2>
+
+
+            <p class="text-muted mb-0">
+                Analyze attendance performance and employee records.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Statistics Cards -->
+
+
+    <div class="row g-4 mb-4">
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Total Employees
+                            </h6>
+
+
+                            <h2 class="fw-bold mb-0">
+                                {{ total_employees|default:0 }}
+                            </h2>
+
+
+                        </div>
+
+
+                        <div class="bg-light rounded-circle p-3">
+
+                            <i class="bi bi-people fs-2 text-primary"></i>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Present Today
+                            </h6>
+
+
+                            <h2 class="fw-bold mb-0">
+                                {{ present_today|default:0 }}
+                            </h2>
+
+
+                        </div>
+
+
+                        <div class="bg-light rounded-circle p-3">
+
+                            <i class="bi bi-check-circle fs-2 text-success"></i>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Late Today
+                            </h6>
+
+
+                            <h2 class="fw-bold mb-0">
+                                {{ late_today|default:0 }}
+                            </h2>
+
+
+                        </div>
+
+
+                        <div class="bg-light rounded-circle p-3">
+
+                            <i class="bi bi-clock-history fs-2 text-warning"></i>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-xl-3 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Absent Today
+                            </h6>
+
+
+                            <h2 class="fw-bold mb-0">
+                                {{ absent_today|default:0 }}
+                            </h2>
+
+
+                        </div>
+
+
+                        <div class="bg-light rounded-circle p-3">
+
+                            <i class="bi bi-person-x fs-2 text-danger"></i>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+    <!-- Reports Menu -->
+
+
+    <div class="row g-4">
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-clock-history fs-2 text-warning me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Late Report
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        View employees who arrived late.
+                    </p>
+
+
+
+                    <a href="{% url 'late_report' %}" class="btn btn-outline-primary">
+
+                        Open Report
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-person-x fs-2 text-danger me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Absent Report
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        Check employee absence records.
+                    </p>
+
+
+
+                    <a href="{% url 'absent_report' %}" class="btn btn-outline-primary">
+
+                        Open Report
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-hourglass-split fs-2 text-success me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Working Hours
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        Analyze employee working duration.
+                    </p>
+
+
+
+                    <a href="{% url 'working_hours_report' %}" class="btn btn-outline-primary">
+
+                        Open Report
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-building fs-2 text-primary me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Department Report
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        Department wise attendance analysis.
+                    </p>
+
+
+
+                    <a href="{% url 'department_attendance_report' %}" class="btn btn-outline-primary">
+
+                        Open Report
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-bar-chart fs-2 text-info me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Dashboard Stats
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        Detailed attendance analytics.
+                    </p>
+
+
+
+                    <a href="{% url 'dashboard_stats' %}" class="btn btn-outline-primary">
+
+                        Open Stats
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-lg-4 col-md-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex align-items-center mb-3">
+
+
+                        <i class="bi bi-file-earmark-arrow-down fs-2 text-success me-3"></i>
+
+
+                        <h5 class="fw-bold mb-0">
+                            Export Report
+                        </h5>
+
+
+                    </div>
+
+
+
+                    <p class="text-muted">
+                        Download attendance CSV report.
+                    </p>
+
+
+
+                    <a href="{% url 'export_report' %}" class="btn btn-outline-primary">
+
+                        Export CSV
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+    <!-- =============================== -->
+    <!-- Analytics Graph Section -->
+    <!-- =============================== -->
+
+
+    <div class="row g-4 mt-4">
+
+
+        <!-- Attendance Trend -->
+
+        <div class="col-lg-12">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body" style="height: 420px;">
+
+                    <h5 class="fw-bold mb-3">
+                        Attendance Trend (Last 30 Days)
+                    </h5>
+
+                    <canvas id="attendanceTrendChart"></canvas>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="row g-4 mt-4">
+
+
+
+        <!-- Attendance Status -->
+
+
+        <div class="col-lg-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <h5 class="fw-bold mb-3">
+
+                        Attendance Status Analysis
+
+                    </h5>
+
+
+                    <canvas id="attendanceStatusChart" height="220"></canvas>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Department Distribution -->
+
+
+        <div class="col-lg-6">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <h5 class="fw-bold mb-3">
+
+                        Department Distribution
+
+                    </h5>
+
+
+                    <canvas id="departmentChart" height="220"></canvas>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="row g-4 mt-4">
+
+
+        <!-- Working Hours -->
+
+
+        <div class="col-lg-12">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-body">
+
+
+                    <h5 class="fw-bold mb-3">
+
+                        Employee Working Hours
+
+                    </h5>
+
+
+                    <canvas id="workingHoursChart" height="110"></canvas>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<!-- Chart JS -->
+
+<!-- Statics contexts converted into hidden data tags for safe usage -->
+<span id="present-today" style="display:none;">{{ present_today|default:0 }}</span>
+<span id="late-today" style="display:none;">{{ late_today|default:0 }}</span>
+<span id="half-day-today" style="display:none;">{{ half_day_today|default:0 }}</span>
+<span id="absent-today" style="display:none;">{{ absent_today|default:0 }}</span>
+
+{{ trend_labels|json_script:"trend-labels" }}
+
+{{ present_data|json_script:"present-data" }}
+
+{{ late_data|json_script:"late-data" }}
+
+{{ half_day_data|json_script:"half-day-data" }}
+
+{{ absent_data|json_script:"absent-data" }}
+
+{{ department_labels|json_script:"department-labels" }}
+
+{{ department_counts|json_script:"department-counts" }}
+
+{{ working_hours_labels|json_script:"working-hours-labels" }}
+
+{{ working_hours_data|json_script:"working-hours-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+
+// ==============================
+// Attendance Trend Chart
+// ==============================
+
+
+function getJson(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        return [];
+    }
+
+    try {
+        return JSON.parse(element.textContent);
+    }
+
+    catch (error) {
+        return [];
+    }
+}
+
+Chart.getChart("attendanceTrendChart")?.destroy();
+Chart.getChart("attendanceStatusChart")?.destroy();
+Chart.getChart("departmentChart")?.destroy();
+Chart.getChart("workingHoursChart")?.destroy();
+
+new Chart(
+    document.getElementById("attendanceTrendChart"),
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: getJson("trend-labels"),
+
+            datasets: [
+
+                {
+                    label: "Present",
+                    data: getJson("present-data")
+                },
+                
+                {
+                    label: "Late",
+                    data: getJson("late-data")
+                },
+
+
+                {
+                    label: "Half Day",
+                    data: getJson("half-day-data")
+                },
+
+
+                {
+                    label: "Absent",
+                    data: getJson("absent-data")
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+// ==============================
+// Today's Status Chart
+// ==============================
+
+
+new Chart(
+    document.getElementById("attendanceStatusChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+
+                "Present",
+                "Late",
+                "Half Day",
+                "Absent"
+
+            ],
+
+
+            datasets: [
+
+                {
+
+                    label: "Employees",
+
+                    data: [
+
+                        parseInt(document.getElementById("present-today").textContent, 10),
+
+                        parseInt(document.getElementById("late-today").textContent, 10),
+
+                        parseInt(document.getElementById("half-day-today").textContent, 10),
+
+                        parseInt(document.getElementById("absent-today").textContent, 10)
+
+                    ]
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+
+// ==============================
+// Department Distribution Chart
+// ==============================
+
+
+new Chart(
+    document.getElementById("departmentChart"),
+    {
+
+        type: "doughnut",
+
+
+        data: {
+
+
+            labels: getJson("department-labels"),
+
+
+            datasets: [
+
+                {
+
+                    label: "Employees",
+
+                    data: getJson("department-counts")
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+
+// ==============================
+// Working Hours Chart
+// ==============================
+
+
+new Chart(
+    document.getElementById("workingHoursChart"),
+    {
+
+        type: "bar",
+
+
+        data: {
+
+
+            labels: getJson("working-hours-labels"),
+
+
+            datasets: [
+
+                {
+
+                    label: "Working Hours",
+
+                    data: getJson("working-hours-data")
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true
+
+        }
+
+    }
+
+);
+
+
+
+</script>
+
+
+
+{% endblock %}
