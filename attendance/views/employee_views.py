@@ -15,6 +15,7 @@ from ..forms import (
     AdminResetPasswordForm,
 )
 from ..models import Attendance, Employee, Department
+from django.db import IntegrityError, transaction
 
 
 
@@ -340,96 +341,79 @@ def inactive_employee_list(request):
 @admin_required
 def employee_create(request):
 
-
     if request.method == "POST":
 
-
-
-        form = EmployeeForm(
-
-            request.POST
-
-        )
-
-
+        form = EmployeeForm(request.POST)
 
         if form.is_valid():
 
-
-
-            password = form.cleaned_data.get(
-
-                "password"
-
-            )
-
-
+            password = form.cleaned_data.get("password")
 
             if not password:
-
-
                 password = generate_password()
 
+            try:
+
+                with transaction.atomic():
+
+                    employee = form.save(commit=False)
+
+                    employee.employee_id = generate_employee_id()
+
+                    # Duplicate Employee ID check
+                    if Employee.objects.filter(
+                        employee_id=employee.employee_id
+                    ).exists():
+
+                        messages.error(
+                            request,
+                            f"Employee ID {employee.employee_id} already exists. Please try again."
+                        )
+
+                        return redirect("employee_create")
 
 
+                    # Duplicate username check
+                    if User.objects.filter(
+                        username=employee.employee_id
+                    ).exists():
+
+                        messages.error(
+                            request,
+                            f"Login ID {employee.employee_id} already exists. Please try again."
+                        )
+
+                        return redirect("employee_create")
 
 
-            employee = form.save(
-
-                commit=False
-
-            )
+                    employee.must_change_password = True
 
 
+                    user = User.objects.create_user(
 
-            employee.employee_id = generate_employee_id()
+                        username=employee.employee_id,
 
+                        password=password,
 
+                        email=employee.email,
 
-            employee.must_change_password = True
+                        first_name=employee.first_name,
 
+                        last_name=employee.last_name
 
-
-
-
-            user = User.objects.create_user(
-
-
-                username=employee.employee_id,
+                    )
 
 
-                password=password,
+                    employee.user = user
+
+                    employee.save()
 
 
-                email=employee.email,
+                    send_mail(
 
+                        subject="Your HRMS Account Created",
 
-                first_name=employee.first_name,
-
-
-                last_name=employee.last_name
-
-
-            )
-
-
-
-            employee.user = user
-
-
-
-            employee.save()
-
-
-
-            send_mail(
-
-
-                subject="Your HRMS Account Created",
-
-
-
-                message=f"""
+                        message=f"""
 Hello {employee.first_name},
 
 
@@ -456,53 +440,56 @@ Regards,
 HR Department
 """,
 
+                        from_email=settings.EMAIL_HOST_USER,
+
+                        recipient_list=[
+                            employee.email
+                        ],
+
+                        fail_silently=False,
+
+                    )
 
 
-                from_email=settings.EMAIL_HOST_USER,
+                messages.success(
+
+                    request,
+
+                    "Employee created successfully. Login credentials sent to employee email."
+
+                )
 
 
-
-                recipient_list=[
-
-                    employee.email
-
-                ],
+                return redirect(
+                    "employee_list"
+                )
 
 
+            except IntegrityError:
 
-                fail_silently=False,
+                messages.error(
+
+                    request,
+
+                    "Employee creation failed because Employee ID already exists. Please try again."
+
+                )
 
 
-            )
+        else:
 
-
-
-            messages.success(
-
+            messages.error(
 
                 request,
 
-
-                "Employee created successfully. Login credentials sent to employee email."
-
+                "Please correct the errors below."
 
             )
-
-
-
-            return redirect(
-
-                "employee_list"
-
-            )
-
 
 
     else:
 
-
         form = EmployeeForm()
-
 
 
     return render(
@@ -512,15 +499,10 @@ HR Department
         "employee/employee_form.html",
 
         {
-
             "form": form
-
         }
 
     )
-
-
-
 
 
 

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import (
     PasswordChangeForm,
     SetPasswordForm,
+    PasswordResetForm,
 )
 
 from .models import (
@@ -9,6 +10,8 @@ from .models import (
     Department,
     Attendance,
 )
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 # ==========================
@@ -110,9 +113,8 @@ class EmployeeForm(forms.ModelForm):
 
     def clean_email(self):
 
-        email = self.cleaned_data.get(
-            "email"
-        )
+        email = self.cleaned_data.get("email")
+
 
         if Employee.objects.filter(
             email=email
@@ -126,6 +128,49 @@ class EmployeeForm(forms.ModelForm):
 
 
         return email
+
+
+
+    def clean_phone_number(self):
+
+        phone_number = self.cleaned_data.get(
+            "phone_number"
+        )
+
+
+        if Employee.objects.filter(
+            phone_number=phone_number
+        ).exclude(
+            pk=self.instance.pk
+        ).exists():
+
+            raise forms.ValidationError(
+                "Phone number already exists."
+            )
+
+
+        return phone_number
+
+
+
+    def clean_date_joined(self):
+
+        date_joined = self.cleaned_data.get(
+            "date_joined"
+        )
+
+
+        from django.utils import timezone
+
+
+        if date_joined and date_joined > timezone.now().date():
+
+            raise forms.ValidationError(
+                "Joining date cannot be in the future."
+            )
+
+
+        return date_joined
 
 
 
@@ -155,7 +200,6 @@ class EmployeeForm(forms.ModelForm):
         return cleaned_data
 
 
-
 # ==========================
 # Change Password Form
 # ==========================
@@ -164,7 +208,7 @@ class CustomPasswordChangeForm(
     PasswordChangeForm
 ):
 
-
+    
     old_password = forms.CharField(
         label="Old Password",
         widget=forms.PasswordInput(
@@ -222,6 +266,62 @@ class AdminResetPasswordForm(SetPasswordForm):
             }
         ),
     )
+    
+# ==========================
+# Custom Password Reset Form
+# ==========================
+
+class CustomPasswordResetForm(PasswordResetForm):
+
+    def send_mail(
+        self,
+        subject_template_name,
+        email_template_name,
+        context,
+        from_email,
+        to_email,
+        html_email_template_name=None,
+    ):
+
+        subject = render_to_string(
+            subject_template_name,
+            context
+        )
+
+        subject = "".join(
+            subject.splitlines()
+        )
+
+
+        body = render_to_string(
+            email_template_name,
+            context
+        )
+
+
+        email = EmailMultiAlternatives(
+            subject,
+            body,
+            from_email,
+            [to_email],
+        )
+
+
+        if html_email_template_name:
+
+            html_body = render_to_string(
+                html_email_template_name,
+                context
+            )
+
+            email.attach_alternative(
+                html_body,
+                "text/html"
+            )
+
+
+        email.send()
+
 
 # ==========================
 # Attendance Form

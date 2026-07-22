@@ -1,3 +1,7 @@
+import logging
+import time
+import uuid
+
 from django import forms
 from django.contrib import messages
 from django.contrib.auth import authenticate
@@ -10,18 +14,21 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
     PasswordChangeView,
 )
-import logging
-import time
-import uuid
-from ..forms import CustomPasswordChangeForm
+
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 
+from ..forms import (
+    CustomPasswordChangeForm,
+    CustomPasswordResetForm,
+)
+
 from ..models import Employee
 
-
 logger = logging.getLogger(__name__)
+
+
 # ==========================================================
 # Employee ID Authentication Form
 # ==========================================================
@@ -229,9 +236,15 @@ class CustomLogoutView(LogoutView):
 # Password Reset
 # ==========================================================
 
-class CustomPasswordResetView(PasswordResetView):
+class CustomPasswordResetView(
+    PasswordResetView
+):
 
-    template_name = "registration/password_reset_form.html"
+    form_class = CustomPasswordResetForm
+
+    template_name = (
+        "registration/password_reset_form.html"
+    )
 
     email_template_name = (
         "registration/password_reset_email.html"
@@ -245,74 +258,79 @@ class CustomPasswordResetView(PasswordResetView):
         "password_reset_done"
     )
 
+
     def form_valid(self, form):
 
         request_id = str(uuid.uuid4())[:8]
         start_time = time.perf_counter()
 
-        email = form.cleaned_data.get("email")
-
-        logger.info("=" * 70)
-        logger.info("[RESET %s] PASSWORD RESET START", request_id)
-        logger.info("[RESET %s] Submitted Email: %s", request_id, email)
-
-        users = list(form.get_users(email))
-
-        logger.info(
-            "[RESET %s] Matched Users: %d",
-            request_id,
-            len(users),
+        email = form.cleaned_data.get(
+            "email"
         )
 
-        for user in users:
-            logger.info(
-                "[RESET %s] User=%s Email=%s Active=%s",
-                request_id,
-                user.username,
-                user.email,
-                user.is_active,
-            )
+
+        logger.info("=" * 70)
+        logger.info(
+            "[RESET %s] PASSWORD RESET START",
+            request_id
+        )
+
+        logger.info(
+            "[RESET %s] Submitted Email: %s",
+            request_id,
+            email
+        )
+
 
         try:
 
-            response = super().form_valid(form)
+            response = super().form_valid(
+                form
+            )
+
 
             elapsed = time.perf_counter() - start_time
 
+
             logger.info(
                 "[RESET %s] Email sent successfully",
-                request_id,
+                request_id
             )
+
 
             logger.info(
                 "[RESET %s] Completed in %.3f seconds",
                 request_id,
-                elapsed,
+                elapsed
             )
 
-            logger.info(
-                "[RESET %s] PASSWORD RESET END",
-                request_id,
-            )
 
             logger.info("=" * 70)
+
 
             return response
 
-        except Exception:
+
+        except Exception as error:
+
 
             elapsed = time.perf_counter() - start_time
 
+
             logger.exception(
-                "[RESET %s] FAILED after %.3f seconds",
+                "[RESET %s] FAILED after %.3f seconds : %s",
                 request_id,
                 elapsed,
+                error
             )
+
 
             logger.info("=" * 70)
 
+
             raise
-        
+
+
 class CustomPasswordResetDoneView(
     PasswordResetDoneView
 ):

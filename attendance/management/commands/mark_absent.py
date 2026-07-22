@@ -5,12 +5,31 @@ from attendance.models import Attendance, Employee
 
 
 class Command(BaseCommand):
-    help = "Automatically mark absent employees after office cutoff time"
+
+    help = "Automatically mark absent employees after 3 PM cutoff time"
 
 
     def handle(self, *args, **options):
 
         today = timezone.localdate()
+
+        current_time = timezone.localtime().time()
+
+
+        # Absent marking allowed after 3 PM only
+        if current_time < timezone.datetime.strptime(
+            "15:00",
+            "%H:%M"
+        ).time():
+
+            self.stdout.write(
+                self.style.WARNING(
+                    "Absent can be marked only after 3:00 PM."
+                )
+            )
+
+            return
+
 
 
         employees = Employee.objects.filter(
@@ -23,22 +42,63 @@ class Command(BaseCommand):
 
         for employee in employees:
 
-            attendance, created = Attendance.objects.get_or_create(
+
+            attendance = Attendance.objects.filter(
                 employee=employee,
-                attendance_date=today,
-                defaults={
-                    "status": Attendance.ABSENT,
-                    "remarks": "Automatically marked absent"
-                }
-            )
+                attendance_date=today
+            ).first()
 
 
-            if created:
-                created_count += 1
+
+            # Already checked in
+            if attendance and attendance.check_in:
+
+                continue
+
+
+
+            # No check-in or no attendance record
+            if attendance:
+
+                attendance.status = Attendance.ABSENT
+
+                attendance.remarks = (
+                    "Automatically marked absent "
+                    "due to no check-in before cutoff time."
+                )
+
+                attendance.save()
+
+
+
+            else:
+
+                Attendance.objects.create(
+
+                    employee=employee,
+
+                    attendance_date=today,
+
+                    status=Attendance.ABSENT,
+
+                    remarks=(
+                        "Automatically marked absent "
+                        "due to no check-in before cutoff time."
+                    )
+
+                )
+
+
+            created_count += 1
+
 
 
         self.stdout.write(
+
             self.style.SUCCESS(
+
                 f"{created_count} employees marked absent successfully."
+
             )
+
         )

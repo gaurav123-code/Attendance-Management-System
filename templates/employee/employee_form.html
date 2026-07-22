@@ -22,11 +22,11 @@
 
                         {% if employee %}
 
-                            Update Employee
+                        Update Employee
 
                         {% else %}
 
-                            Add New Employee
+                        Add New Employee
 
                         {% endif %}
 
@@ -67,11 +67,11 @@
 
                                 {% if form.first_name.errors %}
 
-                                    <div class="text-danger small">
+                                <div class="text-danger small">
 
-                                        {{ form.first_name.errors }}
+                                    {{ form.first_name.errors }}
 
-                                    </div>
+                                </div>
 
                                 {% endif %}
 
@@ -97,11 +97,11 @@
 
                                 {% if form.last_name.errors %}
 
-                                    <div class="text-danger small">
+                                <div class="text-danger small">
 
-                                        {{ form.last_name.errors }}
+                                    {{ form.last_name.errors }}
 
-                                    </div>
+                                </div>
 
                                 {% endif %}
 
@@ -127,11 +127,11 @@
 
                                 {% if form.email.errors %}
 
-                                    <div class="text-danger small">
+                                <div class="text-danger small">
 
-                                        {{ form.email.errors }}
+                                    {{ form.email.errors }}
 
-                                    </div>
+                                </div>
 
                                 {% endif %}
 
@@ -144,7 +144,6 @@
 
                             <div class="col-md-6">
 
-
                                 <label class="form-label fw-semibold">
 
                                     Phone Number
@@ -155,6 +154,17 @@
                                 {{ form.phone_number }}
 
 
+                                {% if form.phone_number.errors %}
+
+                                <div class="text-danger small">
+
+                                    {{ form.phone_number.errors }}
+
+                                </div>
+
+                                {% endif %}
+
+
                             </div>
 
 
@@ -162,7 +172,6 @@
 
 
                             <div class="col-md-6">
-
 
                                 <label class="form-label fw-semibold">
 
@@ -174,6 +183,17 @@
                                 {{ form.department }}
 
 
+                                {% if form.department.errors %}
+
+                                <div class="text-danger small">
+
+                                    {{ form.department.errors }}
+
+                                </div>
+
+                                {% endif %}
+
+
                             </div>
 
 
@@ -181,7 +201,6 @@
 
 
                             <div class="col-md-6">
-
 
                                 <label class="form-label fw-semibold">
 
@@ -193,8 +212,18 @@
                                 {{ form.date_joined }}
 
 
-                            </div>
+                                {% if form.date_joined.errors %}
 
+                                <div class="text-danger small">
+
+                                    {{ form.date_joined.errors }}
+
+                                </div>
+
+                                {% endif %}
+
+
+                            </div>
 
 
 
@@ -238,9 +267,7 @@
 
 
 
-                            <a href="{% url 'employee_list' %}"
-
-                               class="btn btn-secondary">
+                            <a href="{% url 'employee_list' %}" class="btn btn-secondary">
 
 
                                 <i class="bi bi-arrow-left"></i>
@@ -254,9 +281,7 @@
 
 
 
-                            <button type="submit"
-
-                                    class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary">
 
 
                                 <i class="bi bi-save"></i>

@@ -43,41 +43,63 @@ def dashboard(request):
 
 @login_required
 def check_in(request):
+
     if request.user.is_superuser:
         return redirect("admin_dashboard")
+
 
     employee = get_object_or_404(
         Employee,
         user=request.user
     )
 
+
     today = timezone.localdate()
+    current_time = timezone.localtime().time()
 
-    existing_attendance = Attendance.objects.filter(
+    if current_time > time(15, 0):
+
+        messages.error(
+            request,
+            "Check-in is not allowed after 3:00 PM."
+        )
+
+        return redirect("dashboard")
+
+
+    attendance, created = Attendance.objects.get_or_create(
         employee=employee,
-        attendance_date=today
-    ).first()
+        attendance_date=today,
+        defaults={
+            "check_in": timezone.localtime().time(),
+        }
+    )
 
-    if existing_attendance:
+
+    # Already checked in
+    if not created and attendance.check_in:
+
         messages.warning(
             request,
             "You have already checked in today."
         )
+
         return redirect("dashboard")
 
-    attendance = Attendance.objects.create(
-        employee=employee,
-        attendance_date=today,
-        check_in=timezone.localtime().time(),
-    )
 
+    # Update existing ABSENT record
+    attendance.check_in = timezone.localtime().time()
     attendance.status = attendance.calculate_status()
+    attendance.remarks = ""
+
     attendance.save()
+
 
     messages.success(
         request,
         "Check-in successful."
     )
+
 
     return redirect("dashboard")
 
@@ -336,15 +358,31 @@ def mark_attendance(request):
         )
 
 
-        attendance.check_in = request.POST.get(
+        check_in = request.POST.get(
             "check_in"
-        ) or None
+        )
 
-
-        attendance.check_out = request.POST.get(
+        check_out = request.POST.get(
             "check_out"
-        ) or None
+        )
 
+
+        if check_in:
+            attendance.check_in = datetime.strptime(
+                check_in,
+                "%H:%M"
+            ).time()
+        else:
+            attendance.check_in = None
+
+
+        if check_out:
+            attendance.check_out = datetime.strptime(
+                check_out,
+                "%H:%M"
+            ).time()
+        else:
+            attendance.check_out = None
 
         attendance.status = request.POST.get(
             "status"
@@ -402,7 +440,7 @@ def mark_attendance(request):
 def absent_mark(request):
     today = timezone.localdate()
 
-    if timezone.localtime().time() < time(18, 0):
+    if timezone.localtime().time() < time(15, 0):
         messages.warning(
             request,
             "Employees can be marked absent only after 6:00 PM."
@@ -418,7 +456,8 @@ def absent_mark(request):
             employee=employee,
             attendance_date=today,
             defaults={
-                "status": "ABSENT"
+                "status": Attendance.ABSENT,
+                "remarks": "Automatically marked absent"
             }
         )
 

@@ -237,6 +237,8 @@ EMAIL_TIMEOUT = 10
 
 EMAIL_USE_LOCALTIME = True
 
+RESEND_API_KEY = config("RESEND_API_KEY", default="")
+
 
 # ==========================================================
 # Default Primary Key
