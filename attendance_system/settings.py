@@ -235,6 +235,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 EMAIL_TIMEOUT = 10
 
+EMAIL_USE_LOCALTIME = True
+
 
 # ==========================================================
 # Default Primary Key
