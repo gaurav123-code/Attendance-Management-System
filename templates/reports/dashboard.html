@@ -529,7 +529,7 @@ Reports Dashboard
 
 
 
-                    <a href="{% url 'export_report' %}" class="btn btn-outline-primary">
+                    <a href="{% url 'export_page' %}" class="btn btn-outline-primary">
 
                         Export CSV
 
@@ -742,194 +742,145 @@ Reports Dashboard
 <script>
 
 
-// ==============================
-// Attendance Trend Chart
-// ==============================
+    // ==============================
+    // Attendance Trend Chart
+    // ==============================
 
 
-function getJson(id) {
-    const element = document.getElementById(id);
+    function getJson(id) {
+        const element = document.getElementById(id);
 
-    if (!element) {
-        return [];
+        if (!element) {
+            return [];
+        }
+
+        try {
+            return JSON.parse(element.textContent);
+        }
+
+        catch (error) {
+            return [];
+        }
     }
 
-    try {
-        return JSON.parse(element.textContent);
-    }
+    Chart.getChart("attendanceTrendChart")?.destroy();
+    Chart.getChart("attendanceStatusChart")?.destroy();
+    Chart.getChart("departmentChart")?.destroy();
+    Chart.getChart("workingHoursChart")?.destroy();
 
-    catch (error) {
-        return [];
-    }
-}
+    new Chart(
+        document.getElementById("attendanceTrendChart"),
+        {
 
-Chart.getChart("attendanceTrendChart")?.destroy();
-Chart.getChart("attendanceStatusChart")?.destroy();
-Chart.getChart("departmentChart")?.destroy();
-Chart.getChart("workingHoursChart")?.destroy();
+            type: "line",
 
-new Chart(
-    document.getElementById("attendanceTrendChart"),
-    {
+            data: {
 
-        type: "line",
+                labels: getJson("trend-labels"),
 
-        data: {
+                datasets: [
 
-            labels: getJson("trend-labels"),
+                    {
+                        label: "Present",
+                        data: getJson("present-data")
+                    },
 
-            datasets: [
-
-                {
-                    label: "Present",
-                    data: getJson("present-data")
-                },
-                
-                {
-                    label: "Late",
-                    data: getJson("late-data")
-                },
+                    {
+                        label: "Late",
+                        data: getJson("late-data")
+                    },
 
 
-                {
-                    label: "Half Day",
-                    data: getJson("half-day-data")
-                },
+                    {
+                        label: "Half Day",
+                        data: getJson("half-day-data")
+                    },
 
 
-                {
-                    label: "Absent",
-                    data: getJson("absent-data")
-                }
+                    {
+                        label: "Absent",
+                        data: getJson("absent-data")
+                    }
 
-            ]
+                ]
 
-        },
+            },
 
 
-        options: {
+            options: {
 
-            responsive: true,
+                responsive: true,
 
-            maintainAspectRatio: false
+                maintainAspectRatio: false
+
+            }
 
         }
 
-    }
-
-);
+    );
 
 
 
 
 
 
-// ==============================
-// Today's Status Chart
-// ==============================
+    // ==============================
+    // Today's Status Chart
+    // ==============================
 
 
-new Chart(
-    document.getElementById("attendanceStatusChart"),
-    {
+    new Chart(
+        document.getElementById("attendanceStatusChart"),
+        {
 
-        type: "bar",
+            type: "bar",
 
-        data: {
+            data: {
 
-            labels: [
+                labels: [
 
-                "Present",
-                "Late",
-                "Half Day",
-                "Absent"
+                    "Present",
+                    "Late",
+                    "Half Day",
+                    "Absent"
 
-            ],
-
-
-            datasets: [
-
-                {
-
-                    label: "Employees",
-
-                    data: [
-
-                        parseInt(document.getElementById("present-today").textContent, 10),
-
-                        parseInt(document.getElementById("late-today").textContent, 10),
-
-                        parseInt(document.getElementById("half-day-today").textContent, 10),
-
-                        parseInt(document.getElementById("absent-today").textContent, 10)
-
-                    ]
-
-                }
-
-            ]
-
-        },
+                ],
 
 
-        options: {
+                datasets: [
 
-            responsive: true
+                    {
 
-        }
+                        label: "Employees",
 
-    }
+                        data: [
 
-);
+                            parseInt(document.getElementById("present-today").textContent, 10),
 
+                            parseInt(document.getElementById("late-today").textContent, 10),
 
+                            parseInt(document.getElementById("half-day-today").textContent, 10),
 
+                            parseInt(document.getElementById("absent-today").textContent, 10)
 
+                        ]
 
+                    }
 
+                ]
 
-// ==============================
-// Department Distribution Chart
-// ==============================
-
-
-new Chart(
-    document.getElementById("departmentChart"),
-    {
-
-        type: "doughnut",
+            },
 
 
-        data: {
+            options: {
 
+                responsive: true
 
-            labels: getJson("department-labels"),
-
-
-            datasets: [
-
-                {
-
-                    label: "Employees",
-
-                    data: getJson("department-counts")
-
-                }
-
-            ]
-
-        },
-
-
-        options: {
-
-            responsive: true
+            }
 
         }
 
-    }
-
-);
+    );
 
 
 
@@ -937,48 +888,97 @@ new Chart(
 
 
 
-// ==============================
-// Working Hours Chart
-// ==============================
+    // ==============================
+    // Department Distribution Chart
+    // ==============================
 
 
-new Chart(
-    document.getElementById("workingHoursChart"),
-    {
+    new Chart(
+        document.getElementById("departmentChart"),
+        {
 
-        type: "bar",
-
-
-        data: {
+            type: "doughnut",
 
 
-            labels: getJson("working-hours-labels"),
+            data: {
 
 
-            datasets: [
-
-                {
-
-                    label: "Working Hours",
-
-                    data: getJson("working-hours-data")
-
-                }
-
-            ]
-
-        },
+                labels: getJson("department-labels"),
 
 
-        options: {
+                datasets: [
 
-            responsive: true
+                    {
+
+                        label: "Employees",
+
+                        data: getJson("department-counts")
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true
+
+            }
 
         }
 
-    }
+    );
 
-);
+
+
+
+
+
+
+    // ==============================
+    // Working Hours Chart
+    // ==============================
+
+
+    new Chart(
+        document.getElementById("workingHoursChart"),
+        {
+
+            type: "bar",
+
+
+            data: {
+
+
+                labels: getJson("working-hours-labels"),
+
+
+                datasets: [
+
+                    {
+
+                        label: "Working Hours",
+
+                        data: getJson("working-hours-data")
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true
+
+            }
+
+        }
+
+    );
 
 
 
