@@ -245,7 +245,54 @@ class CustomPasswordResetView(
         "password_reset_done"
     )
 
+    def form_valid(self, form):
 
+        print("=" * 70)
+        print("PASSWORD RESET DEBUG START")
+
+        print(
+            "Submitted Email:",
+            form.cleaned_data.get("email"),
+        )
+
+        users = list(
+            form.get_users(
+                form.cleaned_data["email"]
+            )
+        )
+
+        print(
+            "Matched Users:",
+            len(users)
+        )
+
+        for user in users:
+            print(
+                f"User: {user.username} | "
+                f"Email: {user.email} | "
+                f"Active: {user.is_active}"
+            )
+
+        try:
+
+            response = super().form_valid(form)
+
+            print("Password reset email sent successfully.")
+
+            print("PASSWORD RESET DEBUG END")
+            print("=" * 70)
+
+            return response
+
+        except Exception as e:
+
+            print("=" * 70)
+            print("PASSWORD RESET ERROR")
+            print(type(e).__name__)
+            print(str(e))
+            print("=" * 70)
+
+            raise
 
 class CustomPasswordResetDoneView(
     PasswordResetDoneView
