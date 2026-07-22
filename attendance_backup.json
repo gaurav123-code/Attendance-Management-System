@@ -1,0 +1,257 @@
+[
+{
+  "model": "attendance.attendance",
+  "pk": 1,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-13",
+    "status": "PRESENT",
+    "check_in": "09:10:21",
+    "check_out": "19:06:24",
+    "working_hours": null,
+    "remarks": "Overtime",
+    "created_at": "2026-07-13T13:36:35.975Z",
+    "updated_at": "2026-07-13T13:36:35.975Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-15",
+    "status": "HALF_DAY",
+    "check_in": "14:56:39",
+    "check_out": "15:01:45",
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-15T09:26:39.618Z",
+    "updated_at": "2026-07-15T09:31:45.498Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 3,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-16",
+    "status": "LATE",
+    "check_in": "12:07:23",
+    "check_out": "13:27:28",
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-16T06:37:23.770Z",
+    "updated_at": "2026-07-16T07:57:28.841Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 4,
+  "fields": {
+    "employee": 4,
+    "attendance_date": "2026-07-16",
+    "status": "HALF_DAY",
+    "check_in": "18:18:46",
+    "check_out": "18:18:51",
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-16T12:48:46.644Z",
+    "updated_at": "2026-07-16T12:48:51.838Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 5,
+  "fields": {
+    "employee": 5,
+    "attendance_date": "2026-07-17",
+    "status": "HALF_DAY",
+    "check_in": "14:11:53",
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-17T08:41:53.611Z",
+    "updated_at": "2026-07-17T08:41:53.616Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 6,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-17",
+    "status": "PRESENT",
+    "check_in": "09:15:00",
+    "check_out": "18:00:00",
+    "working_hours": "08:45:00",
+    "remarks": "",
+    "created_at": "2026-07-17T09:47:03.441Z",
+    "updated_at": "2026-07-17T09:47:03.441Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 7,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-18",
+    "status": "LATE",
+    "check_in": "10:00:00",
+    "check_out": "18:00:00",
+    "working_hours": "08:00:00",
+    "remarks": "",
+    "created_at": "2026-07-17T09:50:03.167Z",
+    "updated_at": "2026-07-17T09:50:03.167Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 8,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-19",
+    "status": "ABSENT",
+    "check_in": null,
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-17T09:51:24.804Z",
+    "updated_at": "2026-07-17T09:51:24.804Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 9,
+  "fields": {
+    "employee": 10,
+    "attendance_date": "2026-07-19",
+    "status": "LATE",
+    "check_in": "12:00:41.706",
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-19T06:30:41.707Z",
+    "updated_at": "2026-07-19T06:30:41.710Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 10,
+  "fields": {
+    "employee": 10,
+    "attendance_date": "2026-07-20",
+    "status": "LATE",
+    "check_in": "11:33:41.358",
+    "check_out": "11:39:40.335",
+    "working_hours": "00:05:58.977033",
+    "remarks": "",
+    "created_at": "2026-07-20T06:03:41.358Z",
+    "updated_at": "2026-07-20T06:09:40.335Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 11,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-20",
+    "status": "LATE",
+    "check_in": "11:44:12.859",
+    "check_out": "11:44:18.742",
+    "working_hours": "00:00:05.882869",
+    "remarks": "",
+    "created_at": "2026-07-20T06:14:12.859Z",
+    "updated_at": "2026-07-20T06:14:18.742Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 12,
+  "fields": {
+    "employee": 2,
+    "attendance_date": "2026-07-20",
+    "status": "PRESENT",
+    "check_in": "09:30:00",
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-20T12:06:01.028Z",
+    "updated_at": "2026-07-20T12:13:08.330Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 13,
+  "fields": {
+    "employee": 4,
+    "attendance_date": "2026-07-20",
+    "status": "ABSENT",
+    "check_in": null,
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "Automatically marked absent",
+    "created_at": "2026-07-20T12:23:59.753Z",
+    "updated_at": "2026-07-20T12:23:59.753Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 14,
+  "fields": {
+    "employee": 7,
+    "attendance_date": "2026-07-20",
+    "status": "ABSENT",
+    "check_in": null,
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "Automatically marked absent",
+    "created_at": "2026-07-20T12:23:59.759Z",
+    "updated_at": "2026-07-20T12:23:59.759Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 15,
+  "fields": {
+    "employee": 5,
+    "attendance_date": "2026-07-20",
+    "status": "ABSENT",
+    "check_in": null,
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "Automatically marked absent",
+    "created_at": "2026-07-20T12:23:59.762Z",
+    "updated_at": "2026-07-20T12:23:59.762Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 16,
+  "fields": {
+    "employee": 10,
+    "attendance_date": "2026-07-21",
+    "status": "LATE",
+    "check_in": "10:21:27.475",
+    "check_out": "10:23:01.532",
+    "working_hours": "00:01:34.057389",
+    "remarks": "",
+    "created_at": "2026-07-21T04:51:27.475Z",
+    "updated_at": "2026-07-21T04:53:01.533Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 17,
+  "fields": {
+    "employee": 1,
+    "attendance_date": "2026-07-21",
+    "status": "LATE",
+    "check_in": "10:40:52.282",
+    "check_out": null,
+    "working_hours": null,
+    "remarks": "",
+    "created_at": "2026-07-21T05:10:52.283Z",
+    "updated_at": "2026-07-21T05:10:52.293Z"
+  }
+}
+]
