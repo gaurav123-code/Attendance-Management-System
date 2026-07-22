@@ -3,10 +3,25 @@ import csv
 import openpyxl
 
 from django.http import HttpResponse
+from django.shortcuts import render
 
 from ..decorators import admin_required
 from ..models import Attendance
+from django.utils import timezone
+from openpyxl.utils import get_column_letter
 
+
+# ==========================
+# Export Page
+# ==========================
+
+@admin_required
+def export_page(request):
+
+    return render(
+        request,
+        "attendance/export_report.html"
+    )
 
 
 # ==========================
@@ -37,10 +52,34 @@ def export_attendance_csv(request):
         "Working Hours"
     ])
 
+    selected_date = request.GET.get("date")
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+
     attendance_records = Attendance.objects.select_related(
         "employee",
         "employee__department"
-    ).all()
+    ).filter(
+        employee__is_active=True
+    )
+
+
+    if selected_date:
+
+        attendance_records = attendance_records.filter(
+            attendance_date=selected_date
+        )
+
+
+    elif start_date and end_date:
+
+        attendance_records = attendance_records.filter(
+            attendance_date__range=[
+                start_date,
+                end_date
+            ]
+        )
 
 
     for attendance in attendance_records:
@@ -59,7 +98,7 @@ def export_attendance_csv(request):
 
             attendance.employee.department.name,
 
-            attendance.attendance_date,
+            attendance.attendance_date.strftime("%d-%m-%Y"),
 
             attendance.status,
 
@@ -107,13 +146,34 @@ def export_attendance_excel(request):
 
 
 
-    attendance_records = Attendance.objects.select_related(
+    selected_date = request.GET.get("date")
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
 
+
+    attendance_records = Attendance.objects.select_related(
         "employee",
         "employee__department"
+    ).filter(
+        employee__is_active=True
+    )
 
-    ).all()
 
+    if selected_date:
+
+        attendance_records = attendance_records.filter(
+            attendance_date=selected_date
+        )
+
+
+    elif start_date and end_date:
+
+        attendance_records = attendance_records.filter(
+            attendance_date__range=[
+                start_date,
+                end_date
+            ]
+        )
 
 
     for attendance in attendance_records:
@@ -132,7 +192,7 @@ def export_attendance_excel(request):
 
             attendance.employee.department.name,
 
-            str(attendance.attendance_date),
+            attendance.attendance_date.strftime("%d-%m-%Y"),
 
             attendance.status,
 
@@ -153,6 +213,23 @@ def export_attendance_excel(request):
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     )
+    
+    # Auto adjust column width
+
+    for column_cells in sheet.columns:
+
+        length = max(
+            len(str(cell.value))
+            if cell.value
+            else 0
+            for cell in column_cells
+        )
+
+        sheet.column_dimensions[
+            get_column_letter(
+                column_cells[0].column
+            )
+        ].width = length + 3
 
 
     response["Content-Disposition"] = (
@@ -178,5 +255,14 @@ def export_attendance_excel(request):
 
 @admin_required
 def export_report(request):
+
+    export_type = request.GET.get(
+        "type"
+    )
+
+
+    if export_type == "csv":
+        return export_attendance_csv(request)
+
 
     return export_attendance_excel(request)
