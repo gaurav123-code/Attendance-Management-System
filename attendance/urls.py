@@ -191,4 +191,10 @@ urlpatterns = [
     name="admin_reset_password",
     ),
     
+    path(
+    "reports/export-page/",
+    export_views.export_page,
+    name="export_page",
+    ),
+    
 ]
