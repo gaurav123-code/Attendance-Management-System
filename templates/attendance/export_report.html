@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 
+
+{% block title %}
+Export Attendance Report
+{% endblock %}
+
+
+
 {% block content %}
+
 
 <div class="container-fluid mt-4">
 
+
+    <!-- Header -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
 
         <div>
 
-
             <h2 class="fw-bold">
-
                 Export Attendance Report
-
             </h2>
 
 
             <p class="text-muted mb-0">
-
-                Download attendance data in CSV format.
-
+                Download attendance data by date, date range or complete history.
             </p>
 
 
@@ -29,15 +34,13 @@
 
 
 
-
-        <a href="{% url 'attendance_report' %}"
-
+        <a href="{% url 'report_dashboard' %}"
            class="btn btn-outline-primary rounded-pill px-4">
 
 
             <i class="bi bi-arrow-left me-2"></i>
 
-            Back to Report
+            Back to Reports
 
 
         </a>
@@ -49,29 +52,44 @@
 
 
 
-
+    <!-- Export Card -->
 
 
     <div class="row justify-content-center">
 
 
-        <div class="col-lg-6">
-
+        <div class="col-lg-7">
 
 
             <div class="card shadow-sm border-0 rounded-4">
 
 
-                <div class="card-body p-5 text-center">
+                <div class="card-body p-5">
+
+
+                    <div class="text-center mb-4">
+
+
+                        <div class="bg-success text-white rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                             style="width:90px;height:90px;">
+
+
+                            <i class="bi bi-file-earmark-spreadsheet fs-1"></i>
+
+
+                        </div>
 
 
 
-                    <div class="bg-success text-white rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                        <h3 class="fw-bold mt-4">
+                            Export Attendance Data
+                        </h3>
 
-                         style="width:90px;height:90px;">
 
 
-                        <i class="bi bi-file-earmark-spreadsheet fs-1"></i>
+                        <p class="text-muted">
+                            Choose a specific date, date range or export all attendance records.
+                        </p>
 
 
                     </div>
@@ -82,106 +100,122 @@
 
 
 
-                    <h3 class="fw-bold mt-4">
-
-                        Export Attendance Data
-
-                    </h3>
+                    <form method="GET"
+                          action="{% url 'export_report' %}">
 
 
 
+                        <!-- Export Type -->
 
-
-
-
-                    <p class="text-muted">
-
-                        Select date range and download employee attendance records.
-
-                    </p>
+                        <input type="hidden"
+                               name="type"
+                               value="csv">
 
 
 
 
 
 
+                        <!-- Specific Date -->
 
 
-                    {% if messages %}
+                        <div class="mb-4">
+
+
+                            <label class="form-label fw-semibold">
+
+                                Specific Date
+
+                            </label>
+
+
+                            <input type="date"
+                                   name="date"
+                                   class="form-control"
+                                   value="{{ request.GET.date }}">
+
+
+                        </div>
 
 
 
-                        {% for message in messages %}
 
 
 
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+
+                        <div class="text-center mb-3">
 
 
-                                {{ message }}
+                            <span class="badge bg-secondary">
+
+                                OR
+
+                            </span>
+
+
+                        </div>
 
 
 
-                                <button
 
-                                    type="button"
 
-                                    class="btn-close"
 
-                                    data-bs-dismiss="alert">
 
-                                </button>
+                        <!-- Date Range -->
 
+
+                        <h6 class="fw-bold mb-3">
+
+                            Select Date Range
+
+                        </h6>
+
+
+
+                        <div class="row mb-4">
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label">
+
+                                    Start Date
+
+                                </label>
+
+
+                                <input type="date"
+                                       name="start_date"
+                                       class="form-control"
+                                       value="{{ request.GET.start_date }}">
 
 
                             </div>
 
 
 
-                        {% endfor %}
 
 
 
-                    {% endif %}
+                            <div class="col-md-6">
 
 
+                                <label class="form-label">
+
+                                    End Date
+
+                                </label>
 
 
+                                <input type="date"
+                                       name="end_date"
+                                       class="form-control"
+                                       value="{{ request.GET.end_date }}">
 
 
-
-
-
-                    <form method="GET"
-
-                          action="{% url 'export_report' %}">
-
-
-
-
-
-                        <div class="mb-3 text-start">
-
-
-                            <label class="form-label fw-semibold">
-
-                                Start Date
-
-                            </label>
-
-
-
-                            <input
-
-                                type="date"
-
-                                name="start_date"
-
-                                class="form-control"
-
-                                value="{{ request.GET.start_date }}"
-
-                            >
+                            </div>
 
 
 
@@ -193,30 +227,13 @@
 
 
 
-
-                        <div class="mb-4 text-start">
-
-
-                            <label class="form-label fw-semibold">
-
-                                End Date
-
-                            </label>
+                        <div class="alert alert-info">
 
 
+                            <i class="bi bi-info-circle me-2"></i>
 
-                            <input
 
-                                type="date"
-
-                                name="end_date"
-
-                                class="form-control"
-
-                                value="{{ request.GET.end_date }}"
-
-                            >
-
+                            If no date is selected, complete attendance history will be exported.
 
 
                         </div>
@@ -228,11 +245,8 @@
 
 
 
-                        <button
-
-                            type="submit"
-
-                            class="btn btn-success w-100 rounded-pill py-3">
+                        <button type="submit"
+                                class="btn btn-success w-100 rounded-pill py-3">
 
 
                             <i class="bi bi-download me-2"></i>
@@ -241,9 +255,7 @@
                             Download CSV Report
 
 
-
                         </button>
-
 
 
 
@@ -267,9 +279,8 @@
 
 
 
-
-
 </div>
+
 
 
 {% endblock %}
